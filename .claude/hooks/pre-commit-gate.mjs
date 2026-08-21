@@ -29,6 +29,47 @@ const readStdin = () =>
     setTimeout(() => res(d), 2000).unref?.();
   });
 
+/**
+ * Projects touched by the staged change, so the gate tests what you edited
+ * rather than the whole workspace. Angular CLI has no `affected` graph, but a
+ * path->project map is enough and keeps this step honest AND fast.
+ *
+ * Conservative: an edit outside any project (root config, tools/) returns null,
+ * meaning "test everything" — better a slow gate than a missed regression.
+ */
+const affectedProjects = () => {
+  let staged = '';
+  try {
+    staged = execSync('git diff --cached --name-only', { cwd: ROOT, encoding: 'utf8' });
+  } catch {
+    return null;
+  }
+  const files = staged.split('\n').filter(Boolean);
+  if (files.length === 0) return null;
+
+  const projects = new Set();
+  for (const f of files) {
+    const m = /^(libs|apps)\/([^/]+)\//.exec(f);
+    if (m) {
+      projects.add(m[2]);
+      continue;
+    }
+    // Anything outside a project can affect all of them (tsconfig, deps, tokens).
+    if (!/^(docs|research|reports|e2e|\.github|\.claude)\//.test(f) && !/^(PRD|CLAUDE|README)\.md$/.test(f)) {
+      return null;
+    }
+  }
+  // Everything downstream of a layer must be retested when that layer changes.
+  const downstream = {
+    tokens: ['a11y-core', 'primitives', 'components', 'docs'],
+    'a11y-core': ['primitives', 'components', 'docs'],
+    primitives: ['components', 'docs'],
+    components: ['docs'],
+  };
+  for (const p of [...projects]) (downstream[p] ?? []).forEach((d) => projects.add(d));
+  return [...projects];
+};
+
 const pkgScripts = () => {
   const p = resolve(ROOT, 'package.json');
   if (!existsSync(p)) return null;
@@ -55,13 +96,24 @@ const main = async () => {
   const scripts = pkgScripts();
   if (scripts === null) process.exit(0); // pre-workspace: nothing to check yet
 
+  const affected = affectedProjects();
+  const testCommand = () =>
+    affected === null
+      ? 'npm run test:ci --silent'
+      : affected.map((p) => `npx ng test ${p} --watch=false`).join(' && ');
+
   /** [label, shell command, requirement ID, run only if this exists] */
   const steps = [
-    ['ESLint (a11y rules + layer boundaries)', 'npm run lint --silent', 'AR-*, §7.6', () => 'lint' in scripts],
+    ['ESLint (a11y rules + layer boundaries)', 'npm run lint --silent', 'AR-*, §7.6', () => 'lint' in scripts && ['eslint.config.js', 'eslint.config.mjs', 'eslint.config.cjs', '.eslintrc.json'].some((f) => existsSync(resolve(ROOT, f)))],
     ['Stylelint (focus/token guards)', 'npx stylelint "libs/**/*.{css,scss}"', 'AR-05, §10.5', () => existsSync(resolve(ROOT, '.stylelintrc.json')) || existsSync(resolve(ROOT, 'stylelint.config.js'))],
-    ['TypeScript', 'npx tsc -b --pretty false', '—', () => existsSync(resolve(ROOT, 'tsconfig.json'))],
+    ['TypeScript', 'npm run typecheck --silent', '—', () => existsSync(resolve(ROOT, 'tools/typecheck.mjs'))],
     ['Contrast validator', 'npm run tokens:validate --silent', 'TR-07', () => 'tokens:validate' in scripts],
-    ['Unit + component a11y', 'npm run test:ci --silent', 'TR-01, TR-05', () => 'test:ci' in scripts],
+    [
+      `Unit + component a11y${affected ? ` [${affected.join(', ') || 'none affected'}]` : ' [all]'}`,
+      testCommand(),
+      'TR-01, TR-05',
+      () => 'test:ci' in scripts && (affected === null || affected.length > 0),
+    ],
   ];
 
   const failures = [];

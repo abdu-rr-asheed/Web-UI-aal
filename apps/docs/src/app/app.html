@@ -1,0 +1,26 @@
+<!--
+  Docs app shell. This app is the Lighthouse and Playwright audit target
+  (PRD NFR-13, TR-06) and the environment for the November usability study
+  (PRD §13.3), so its own structure must satisfy AR-24: skip link first,
+  correct landmarks with unique names, one <h1>, no skipped heading levels.
+-->
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<header class="app-header">
+  <nav aria-label="Primary">
+    <ul>
+      <li><a href="/" aria-current="page">Home</a></li>
+      <li><a href="/components">Components</a></li>
+      <li><a href="/reports">Audit reports</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main" tabindex="-1">
+  <h1>{{ title() }}</h1>
+  <router-outlet />
+</main>
+
+<footer class="app-footer">
+  <p>Angular Aria Library — WCAG 2.2 AA. MSc Software Engineering, Kingston University London.</p>
+</footer>

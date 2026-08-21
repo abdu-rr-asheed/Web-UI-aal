@@ -1,0 +1,41 @@
+/*
+  Minimal shell styling. Deliberately token-free for now — real tokens arrive
+  in Session B (@aal/tokens). The one thing that must be correct from day one
+  is the skip link (SC 2.4.1) and a visible focus indicator (AR-05).
+*/
+.skip-link {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0;
+  padding: 0.5rem 1rem;
+  background: #fff;
+  color: #10131a;
+  transform: translateY(-150%);
+}
+
+/* Visible on focus, never removed — never use `display: none` for a skip link. */
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+:where(a, button, [tabindex]):focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.app-header nav ul {
+  display: flex;
+  gap: 1rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+main {
+  padding-block: 1.5rem;
+}
+
+/* main[tabindex="-1"] receives focus from the skip link; it must not draw a ring. */
+main:focus {
+  outline: none;
+}

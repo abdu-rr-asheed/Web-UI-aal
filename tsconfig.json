@@ -1,0 +1,71 @@
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "preserve",
+    "paths": {
+      "@aal/tokens": ["./libs/tokens/src/public-api.ts"],
+      "@aal/tokens/*": ["./libs/tokens/src/lib/*"],
+      "@aal/a11y-core": ["./libs/a11y-core/src/public-api.ts"],
+      "@aal/a11y-core/*": ["./libs/a11y-core/src/lib/*"],
+      "@aal/primitives": ["./libs/primitives/src/public-api.ts"],
+      "@aal/primitives/*": ["./libs/primitives/src/lib/*"],
+      "@aal/components": ["./libs/components/src/public-api.ts"],
+      "@aal/components/*": ["./libs/components/src/lib/*"]
+    }
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./libs/tokens/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/tokens/tsconfig.spec.json"
+    },
+    {
+      "path": "./libs/a11y-core/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/a11y-core/tsconfig.spec.json"
+    },
+    {
+      "path": "./libs/primitives/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/primitives/tsconfig.spec.json"
+    },
+    {
+      "path": "./libs/components/tsconfig.lib.json"
+    },
+    {
+      "path": "./libs/components/tsconfig.spec.json"
+    },
+    {
+      "path": "./apps/docs/tsconfig.app.json"
+    },
+    {
+      "path": "./apps/docs/tsconfig.spec.json"
+    },
+    {
+      "path": "./apps/playground/tsconfig.app.json"
+    },
+    {
+      "path": "./apps/playground/tsconfig.spec.json"
+    }
+  ]
+}
