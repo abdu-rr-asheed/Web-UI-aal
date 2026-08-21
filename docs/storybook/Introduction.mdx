@@ -1,0 +1,37 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="AAL/Introduction" />
+
+# Angular Aria Library
+
+Accessibility-first Angular component library. WCAG 2.2 Level AA and WAI-ARIA
+APG 1.2 conformance are enforced structural properties, not documented
+aspirations.
+
+MSc Software Engineering research deliverable, Kingston University London.
+
+## How to read these docs
+
+Every component page carries an **Accessibility** section stating its ARIA
+role, its full keyboard interaction table, focus behaviour, the screen-reader
+announcements it produces, and the WCAG success criteria it satisfies — plus a
+dated record of which screen reader and browser combinations it was verified
+against.
+
+The **Accessibility** panel below each story runs axe with the same rule set as
+the CI gate. A green panel here means the same thing it means in CI.
+
+## What "enforced" means
+
+- Zero critical or serious axe violations, across every documented state, on every commit
+- Contrast verified from the token source at build time, across light, dark and high-contrast themes
+- Every APG keyboard interaction row covered by a test
+- Focus indicators and minimum target sizes are sealed tokens that consumer CSS cannot override
+
+## What automation cannot tell you
+
+Automated tools detect roughly 20–30% of real WCAG failures. Everything on this
+site is additionally subject to expert review against the WCAG 2.2 checklist and
+to usability testing with people who use assistive technology daily. Where the
+engines disagree with each other, that is recorded as a finding rather than
+smoothed over — see the engine divergence register in the repository.

@@ -1,1 +1,22 @@
-/* You can add global styles to this file, and also import other style files */
+/**
+ * Global styles.
+ *
+ * The token stylesheet is loaded ahead of this file via the angular.json
+ * `styles` array, not imported here: @layer order is fixed by first
+ * declaration, so aal.tokens and aal.invariants must be established before
+ * any app style can participate in the cascade.
+ */
+html {
+  /* rem-based type scale (AR-18) — never a px root size, which would defeat
+     the user's own browser text-size setting. */
+  font-family: var(--aal-font-family-sans);
+  font-size: 100%;
+  line-height: var(--aal-font-lineheight-body);
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  background: var(--aal-color-surface-default);
+  color: var(--aal-color-text-default);
+}

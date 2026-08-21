@@ -1,41 +1,82 @@
-/*
-  Minimal shell styling. Deliberately token-free for now — real tokens arrive
-  in Session B (@aal/tokens). The one thing that must be correct from day one
-  is the skip link (SC 2.4.1) and a visible focus indicator (AR-05).
-*/
+/**
+ * Shell styling, token-driven.
+ *
+ * This app is the Lighthouse and Playwright audit target (NFR-13) and the
+ * November usability-study environment, so it uses the same token system it
+ * documents. Hard-coded colours here would silently opt the audit target out of
+ * dark mode, high-contrast mode and forced-colors support — Stylelint blocks
+ * them for exactly that reason.
+ */
+
+/* SC 2.4.1 Bypass Blocks. Moved off-screen rather than hidden: display:none
+   would remove it from the tab order, which is the whole point of it. */
 .skip-link {
   position: absolute;
-  inset-inline-start: 0;
-  inset-block-start: 0;
-  padding: 0.5rem 1rem;
-  background: #fff;
-  color: #10131a;
-  transform: translateY(-150%);
+  inset-inline-start: var(--aal-space-2);
+  inset-block-start: var(--aal-space-2);
+  z-index: 100;
+  padding: var(--aal-space-2) var(--aal-space-4);
+  border-radius: var(--aal-radius-md);
+  background: var(--aal-color-surface-default);
+  color: var(--aal-color-text-default);
+  transform: translateY(-200%);
 }
 
-/* Visible on focus, never removed — never use `display: none` for a skip link. */
 .skip-link:focus-visible {
   transform: translateY(0);
 }
 
-:where(a, button, [tabindex]):focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 2px;
+/* AR-05 — the two-tone ring. One tone always clears 3:1 against whatever the
+   consumer put behind the control; the token values are sealed invariants. */
+:where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"])):focus-visible {
+  outline: var(--aal-focus-ring-width) solid var(--aal-color-focus-outer);
+  outline-offset: var(--aal-focus-ring-offset);
+  box-shadow: 0 0 0 var(--aal-focus-ring-width) var(--aal-color-focus-inner);
+}
+
+.app-header {
+  border-block-end: var(--aal-border-width-thin) solid var(--aal-color-border-default);
+  padding: var(--aal-space-3) var(--aal-space-4);
 }
 
 .app-header nav ul {
   display: flex;
-  gap: 1rem;
-  padding: 0;
+  flex-wrap: wrap;
+  gap: var(--aal-space-4);
   margin: 0;
+  padding: 0;
   list-style: none;
 }
 
-main {
-  padding-block: 1.5rem;
+.app-header a {
+  display: inline-block;
+  /* AR-09 / SC 2.5.8 — the hit area, not just the glyph, must clear 24px. */
+  min-height: var(--aal-target-min);
+  padding: var(--aal-space-1) 0;
+  color: var(--aal-color-text-link);
 }
 
-/* main[tabindex="-1"] receives focus from the skip link; it must not draw a ring. */
-main:focus {
-  outline: none;
+.app-header a[aria-current='page'] {
+  /* Not colour alone (AR-13): current page carries an underline as well. */
+  text-decoration-thickness: var(--aal-border-width-medium);
+  text-underline-offset: var(--aal-space-1);
+}
+
+main {
+  max-width: 70rem;
+  margin-inline: auto;
+  padding: var(--aal-space-5) var(--aal-space-4);
+}
+
+/* Note: main[tabindex="-1"] deliberately gets NO focus ring. It is a
+   programmatic skip-link target, not a tab stop, and a ring would imply it is
+   interactive. That is achieved by excluding tabindex="-1" from the selector
+   above — NOT by setting outline: none, which Stylelint blocks and which would
+   also have suppressed the ring for genuinely focusable elements (AR-05).
+   :focus-visible alone is not sufficient here: [tabindex] matched main. */
+
+.app-footer {
+  border-block-start: var(--aal-border-width-thin) solid var(--aal-color-border-default);
+  padding: var(--aal-space-4);
+  color: var(--aal-color-text-muted);
 }

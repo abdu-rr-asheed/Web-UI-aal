@@ -288,7 +288,7 @@ These are the requirements the research evaluates.
 | TR-01 | Every component SHALL have axe-core assertions covering **every documented state and variant**, not only the default state. | MUST |
 | TR-02 | Every component SHALL have keyboard-conformance tests asserting each key binding in its APG pattern, with `describe` blocks named after the APG interaction-table rows. | MUST |
 | TR-03 | Every component SHALL have focus-management tests asserting focus location before, during and after each interaction. | MUST |
-| TR-04 | Every component SHALL assert ARIA state against the **accessibility tree** (Playwright accessibility snapshot), not only the DOM. | MUST |
+| TR-04 | Every component SHALL assert ARIA state against the **accessibility tree** (Playwright `locator.ariaSnapshot()`), not only the DOM. | MUST |
 | TR-05 | Statement/branch coverage SHALL be ≥90% for `@aal/primitives` and ≥85% for `@aal/components`. | MUST |
 | TR-06 | Lighthouse accessibility score SHALL be ≥98 on every documentation route, asserted in CI. | MUST |
 | TR-07 | Contrast ratios SHALL be verified programmatically from the token source at build time, failing the build on any violation. | MUST |
@@ -399,7 +399,7 @@ The proposal names `FocusTrap`, `LiveAnnouncer` and `FocusMonitor`. The implemen
 | **`eslint-plugin-jsx-a11y`** | — | **Not used** | JSX-only; not applicable to Angular templates. See §19.1 for the correction and the Angular-equivalent rule set. |
 | **axe Linter (Deque)** | latest | IDE + optional CI | Catches ARIA misuse at authoring time. |
 | **Stylelint** | 16.x | CSS guard | Custom rules forbidding `outline: none`, hard-coded hex colours in component styles, and `!important` on focus styles — enforces the AR-05 invariant. |
-| **Playwright** | 1.62.x | E2E driver | Also supplies `page.accessibility.snapshot()` for accessibility-tree assertions (TR-04) and precise keyboard simulation for APG conformance. |
+| **Playwright** | 1.62.x | E2E driver | Supplies `locator.ariaSnapshot()` / `toMatchAriaSnapshot` for accessibility-tree assertions (TR-04) and precise keyboard simulation for APG conformance. **Note:** `page.accessibility.snapshot()`, named in earlier drafts, was removed from Playwright — see §19.8. |
 | **Vitest + `@testing-library/angular`** | 4.1.x / 19.4.x | Unit / component | Run through Angular 22's native `@angular/build:unit-test` builder (`vitest` is a first-class `@angular/build` peer). Testing Library's `getByRole` queries force tests to locate elements *the way a screen reader does* — a semantic assertion in itself. See §19.2 for why this replaces Karma/Jasmine. |
 | **`@storybook/addon-a11y`** | 10.5.x | Docs-time | Live axe results in every story (DR-01). |
 | **Chromatic** *(optional, free OSS tier)* | — | Visual regression | Focus-state, forced-colors and RTL snapshots (TR-10). |
@@ -429,7 +429,7 @@ Plus AAL's own `@aal/eslint-plugin` rules (FR-14): `require-accessible-name`, `n
 
 | Tool | Version | Role |
 |---|---|---|
-| **Storybook for Angular** | 10.5.x | Primary interactive documentation; per-component a11y panel; autodocs API tables (DR-01/DR-02). |
+| **Storybook for Angular** (`@storybook/angular-vite`) | 10.5.x | Primary interactive documentation; per-component a11y panel; autodocs API tables (DR-01/DR-02). Uses the **Vite** framework package, not `@storybook/angular` — see §19.9. |
 | **Compodoc** | 1.1.x | Generated TypeScript API reference, complementing Storybook's usage-oriented docs. |
 | **Mermaid** | 11.x | Architecture and interaction diagrams in docs and dissertation. |
 | **Git + GitHub** | — | Version control; issues as the requirement backlog; PR review. |
@@ -1741,6 +1741,24 @@ This executes a decision the PRD already recorded rather than reversing one — 
 ### 19.7 Headless primitive layer added to the architecture
 
 **Addition:** proposal Figure 1 shows Component / Accessibility Core / Theme layers. The implementation inserts `@aal/primitives` (L3) between components and the a11y core (§7.2). This is an elaboration rather than a contradiction — it is the mechanism that makes the proposal's "Accessibility Core Layer" enforceable, and it mirrors the behaviour/presentation separation identified in React Aria in proposal §3.2.3.
+
+### 19.8 `page.accessibility.snapshot()` no longer exists
+
+**Earlier drafts stated:** accessibility-tree assertions via Playwright's `page.accessibility.snapshot()` (TR-04, §11.4).
+
+**Correction:** Playwright removed the `page.accessibility` namespace; in 1.62 the property is simply undefined. The current equivalent is `locator.ariaSnapshot()`, which returns a YAML rendering of the computed tree, together with the `expect(locator).toMatchAriaSnapshot()` matcher.
+
+This is a strict improvement for the research, not merely a rename. The YAML form is human-readable, so an accessibility-tree assertion becomes reviewable evidence an examiner can read directly, rather than an opaque nested object. The requirement itself — assert against the computed tree, never against DOM attributes — is unchanged and is the point: role, `aria-label` and content diverge exactly when their precedence rules disagree, and only the tree shows what assistive technology will actually receive.
+
+### 19.9 `@storybook/angular` is not usable on Angular 22
+
+**Proposal/PRD stated:** Storybook for Angular via `@storybook/angular` (§6.7).
+
+**Correction:** `@storybook/angular` 10.5.x still depends on the legacy `@angular-devkit/build-angular` webpack builder. npm resolves that to v21, which peers `@angular/compiler-cli@^21` and therefore conflicts irreconcilably with this workspace's Angular 22 — installation fails with ERESOLVE rather than degrading quietly.
+
+**Replacement:** `@storybook/angular-vite` 10.5.x, which peers directly on `@angular/build` — the builder Angular 22 actually ships — and supports `@angular/core >=21 <23`. Storybook's own `init` detects the framework as `angular-vite`, confirming this is the intended path rather than a workaround.
+
+**Consequence for the dissertation:** none to the accessibility argument; the addon set, the axe rule configuration and the autodocs API tables are identical. Worth one sentence in the methodology, because it is a second instance of the same pattern as §19.1 and §19.2 — a tool named in the proposal that does not survive contact with the current framework version, caught because the toolchain was verified against the registry before code was written rather than assumed.
 
 ---
 

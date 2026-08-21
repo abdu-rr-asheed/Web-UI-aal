@@ -3,8 +3,11 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    // Shared helpers live in <root>/testing, outside this project. Spec configs
+    // are type-check-only, so widening rootDir costs nothing and avoids TS6059.
+    "rootDir": "../..",
     "outDir": "../../out-tsc/spec",
     "types": ["vitest/globals"]
   },
-  "include": ["src/**/*.d.ts", "src/**/*.spec.ts"]
+  "include": ["src/**/*.d.ts", "src/**/*.spec.ts", "../../testing/**/*.ts"]
 }

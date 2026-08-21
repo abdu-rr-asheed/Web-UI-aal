@@ -1,0 +1,101 @@
+{
+  "extends": [
+    "stylelint-config-standard-scss"
+  ],
+  "ignoreFiles": [
+    "dist/**",
+    "coverage/**",
+    "storybook-static/**",
+    "libs/tokens/src/styles/**",
+    "**/node_modules/**"
+  ],
+  "rules": {
+    "declaration-property-value-disallowed-list": [
+      {
+        "outline": [
+          "/^none$/",
+          "/^0$/",
+          "/^0px$/"
+        ],
+        "outline-style": [
+          "none",
+          "hidden"
+        ],
+        "outline-width": [
+          "0",
+          "0px"
+        ]
+      },
+      {
+        "message": "AR-05 / SC 2.4.7: removing the focus outline removes the only signal a keyboard user has about where they are. If you need a different indicator, draw it and keep the outline transparent-but-present — do not set it to none. This rule cannot be disabled in AAL (PRD §10.5)."
+      }
+    ],
+    "color-no-hex": [
+      true,
+      {
+        "message": "AR-07 / AR-08: hard-coded colours bypass the token system, and therefore bypass the contrast gate, the dark and high-contrast themes, and forced-colors support. Use a semantic token: var(--aal-color-...). See PRD §10.2."
+      }
+    ],
+    "declaration-no-important": [
+      true,
+      {
+        "message": "!important in component styles defeats consumer theming and usually hides a specificity problem. The only legitimate use in AAL is the Tier 4 sealed invariants, which are GENERATED into libs/tokens/src/styles/tokens.css (ignored by this config) — see PRD §10.2."
+      }
+    ],
+    "media-feature-name-no-unknown": [
+      true,
+      {
+        "ignoreMediaFeatureNames": [
+          "forced-colors",
+          "prefers-contrast",
+          "prefers-reduced-motion"
+        ]
+      }
+    ],
+    "unit-disallowed-list": [
+      [
+        "px"
+      ],
+      {
+        "ignoreProperties": {
+          "px": [
+            "/^border/",
+            "/^outline/",
+            "min-width",
+            "min-height",
+            "max-width",
+            "max-height",
+            "width",
+            "height"
+          ]
+        },
+        "message": "AR-18 / SC 1.4.4: px font sizes and spacing silently defeat the user's own browser text-size setting. Use rem. Exempt: hairline borders, outlines, and the 24px minimum target size, which must NOT scale down with the root font (AR-09)."
+      }
+    ],
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        "ignorePseudoClasses": [
+          "focus-visible",
+          "focus-within",
+          "where",
+          "is",
+          "has"
+        ]
+      }
+    ],
+    "scss/at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": [
+          "layer"
+        ]
+      }
+    ],
+    "custom-property-pattern": null,
+    "selector-class-pattern": null,
+    "no-descending-specificity": null,
+    "comment-empty-line-before": null,
+    "declaration-empty-line-before": null
+  }
+}
