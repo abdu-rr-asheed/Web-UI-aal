@@ -1,0 +1,131 @@
+{
+  "$description": "Contrast contracts (PRD §10.3, TR-07). This file is the machine-readable form of AR-07 and AR-08: every pairing a component can actually render is declared here and verified at build time. It is deliberately explicit rather than inferred — an inferred check silently misses the pair nobody thought to declare, and 'we did not think of it' is precisely how contrast failures reach production.",
+
+  "rules": {
+    "text": {
+      "min": 4.5,
+      "sc": "1.4.3 Contrast (Minimum)",
+      "level": "AA",
+      "requirement": "AR-07"
+    },
+    "large-text": {
+      "min": 3.0,
+      "sc": "1.4.3 Contrast (Minimum), large-text threshold",
+      "level": "AA",
+      "requirement": "AR-07",
+      "note": "Applies at >=24px regular or >=18.66px bold — font.size.large-text-threshold."
+    },
+    "non-text": {
+      "min": 3.0,
+      "sc": "1.4.11 Non-text Contrast",
+      "level": "AA",
+      "requirement": "AR-08"
+    },
+    "enhanced": {
+      "min": 7.0,
+      "sc": "1.4.6 Contrast (Enhanced)",
+      "level": "AAA",
+      "requirement": "AR-07",
+      "note": "Not required by the AA target. Applied only to the high-contrast theme, where the whole point is to exceed AA."
+    }
+  },
+
+  "themeRuleOverrides": {
+    "high-contrast": { "text": "enhanced" }
+  },
+
+  "contracts": [
+    { "id": "body-text",            "fg": "color.text.default",     "bg": "color.surface.default", "rule": "text" },
+    { "id": "body-text-raised",     "fg": "color.text.default",     "bg": "color.surface.raised",  "rule": "text" },
+    { "id": "body-text-sunken",     "fg": "color.text.default",     "bg": "color.surface.sunken",  "rule": "text" },
+    { "id": "body-text-overlay",    "fg": "color.text.default",     "bg": "color.surface.overlay", "rule": "text" },
+
+    { "id": "muted-text",           "fg": "color.text.muted",       "bg": "color.surface.default", "rule": "text" },
+    { "id": "muted-text-raised",    "fg": "color.text.muted",       "bg": "color.surface.raised",  "rule": "text" },
+
+    { "id": "link-text",            "fg": "color.text.link",        "bg": "color.surface.default", "rule": "text" },
+    { "id": "link-text-raised",     "fg": "color.text.link",        "bg": "color.surface.raised",  "rule": "text" },
+
+    { "id": "placeholder-text",     "fg": "color.text.placeholder", "bg": "color.field.bg",        "rule": "text",
+      "note": "Placeholder is never the sole label (AR-11), but when shown it must be readable." },
+
+    { "id": "disabled-text",        "fg": "color.text.disabled",    "bg": "color.field.bg-disabled", "rule": "text",
+      "note": "SC 1.4.3 exempts inactive controls. AAL meets the ratio anyway — see exemptions[] for why we decline the exemption." },
+    { "id": "disabled-action-text", "fg": "color.text.disabled",    "bg": "color.action.bg-disabled", "rule": "text" },
+
+    { "id": "action-label",         "fg": "color.text.on-action",   "bg": "color.action.bg",        "rule": "text" },
+    { "id": "action-label-hover",   "fg": "color.text.on-action",   "bg": "color.action.bg-hover",  "rule": "text" },
+    { "id": "action-label-active",  "fg": "color.text.on-action",   "bg": "color.action.bg-active", "rule": "text" },
+
+    { "id": "danger-label",         "fg": "color.text.on-danger",   "bg": "color.danger.bg",        "rule": "text" },
+    { "id": "danger-message",       "fg": "color.danger.text",      "bg": "color.surface.default",  "rule": "text",
+      "note": "Validation error text (AR-12). Colour is never the only signal — icon and text always accompany it (AR-13)." },
+    { "id": "danger-message-surface","fg": "color.danger.text",     "bg": "color.danger.surface",   "rule": "text" },
+    { "id": "success-message",      "fg": "color.success.text",     "bg": "color.surface.default",  "rule": "text" },
+    { "id": "success-message-surface","fg": "color.success.text",   "bg": "color.success.surface",  "rule": "text" },
+    { "id": "warning-message",      "fg": "color.warning.text",     "bg": "color.surface.default",  "rule": "text" },
+    { "id": "warning-message-surface","fg": "color.warning.text",   "bg": "color.warning.surface",  "rule": "text" },
+
+    { "id": "selected-text",        "fg": "color.selected.text",    "bg": "color.selected.bg",      "rule": "text" },
+
+    { "id": "component-border",     "fg": "color.border.default",   "bg": "color.surface.default",  "rule": "non-text" },
+    { "id": "component-border-raised","fg": "color.border.default", "bg": "color.surface.raised",   "rule": "non-text" },
+    { "id": "field-border",         "fg": "color.field.border",     "bg": "color.surface.default",  "rule": "non-text",
+      "note": "The boundary of a text input IS a UI component boundary under 1.4.11 — a field the user cannot locate is a field they cannot fill." },
+    { "id": "field-border-hover",   "fg": "color.field.border-hover","bg": "color.surface.default", "rule": "non-text" },
+    { "id": "field-border-invalid", "fg": "color.field.border-invalid","bg": "color.surface.default","rule": "non-text" },
+    { "id": "action-boundary",      "fg": "color.action.border",    "bg": "color.surface.default",  "rule": "non-text" },
+    { "id": "danger-boundary",      "fg": "color.danger.border",    "bg": "color.surface.default",  "rule": "non-text" },
+    { "id": "selected-indicator",   "fg": "color.selected.border",  "bg": "color.surface.default",  "rule": "non-text",
+      "note": "Selection state must be perceivable as a state change. The validator originally checked selected.bg here and FAILED it at 1.24:1 — correctly, because a tint that faint cannot convey state. The fix was to introduce an explicit indicator rather than to darken the tint into an unreadable wash. See exemptions[] for selected.bg." },
+    { "id": "selected-indicator-raised", "fg": "color.selected.border", "bg": "color.surface.raised", "rule": "non-text" }
+  ],
+
+  "focusRing": {
+    "$description": "AR-05 / SC 1.4.11. The two-tone ring (PRD §10.5) passes against a given background when AT LEAST ONE tone reaches 3:1 — that is the whole point of two tones: the pair survives light and dark surfaces without the library knowing what the consumer put behind the control.",
+    "rule": "non-text",
+    "tones": ["color.focus.outer", "color.focus.inner"],
+    "against": [
+      "color.surface.default",
+      "color.surface.raised",
+      "color.surface.sunken",
+      "color.surface.overlay",
+      "color.action.bg",
+      "color.action.bg-hover",
+      "color.danger.bg",
+      "color.field.bg",
+      "color.selected.bg"
+    ]
+  },
+
+  "exemptions": [
+    {
+      "token": "color.border.subtle",
+      "sc": "1.4.11",
+      "reason": "Purely decorative dividers that convey no information and do not bound an interactive control. 1.4.11 applies to parts required to identify a component or its state; these are neither. Every INFORMATIVE boundary uses color.border.default, which is contract-checked.",
+      "decided": "2026-08-21",
+      "review": "Re-confirm during the expert WCAG review (PRD §13.2) — if any component uses border.subtle to bound a control, this exemption is void and that component is the defect."
+    },
+    {
+      "token": "color.surface.scrim",
+      "sc": "1.4.11",
+      "reason": "Modal backdrop. Decorative dimming only; inertness is conveyed by the `inert` attribute and focus trapping (AR-15), never by the scrim's appearance.",
+      "decided": "2026-08-21",
+      "review": "Re-confirm during expert review."
+    },
+    {
+      "token": "color.selected.bg",
+      "sc": "1.4.11",
+      "reason": "Decorative reinforcement of selection, not the indicator itself. The perceivable state change is carried by color.selected.border (contract 'selected-indicator', 3:1 enforced) plus aria-selected in the accessibility tree (AR-16). The tint stays subtle deliberately: raising it to 3:1 against the page would force selected.text down toward the 4.5:1 floor and make selected rows visually shout.",
+      "decided": "2026-08-21",
+      "review": "VOID IF: any component conveys selection using selected.bg WITHOUT also rendering selected.border. Check every component that has a selected state — Listbox option, Tabs tab, Table row, Menu item — during the expert WCAG review (PRD §13.2). If one relies on the tint alone, that component is the defect and this exemption does not cover it.",
+      "originally-failed": "1.24:1 (light), 1.20:1 (dark) — recorded so the audit trail shows this exemption came from a real failure that was designed out, not from a threshold that was lowered."
+    },
+    {
+      "declined-exemption": "color.text.disabled",
+      "sc": "1.4.3",
+      "reason": "WCAG 1.4.3 exempts text in inactive user-interface components. AAL declines that exemption and holds disabled text to 4.5:1 anyway: a user who cannot read a disabled control cannot tell WHAT is unavailable, and the exemption exists for legacy reasons rather than user benefit. Recorded here so that exceeding the standard is visibly a decision.",
+      "decided": "2026-08-21"
+    }
+  ]
+}

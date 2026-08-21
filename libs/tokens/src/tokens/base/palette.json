@@ -1,0 +1,67 @@
+{
+  "$description": "Tier 1 — primitive palette (PRD §10.2). Raw values with no semantic meaning. Never referenced directly by a component; components resolve through Tier 2/3 semantic tokens so that contrast contracts have a single place to be enforced.",
+  "palette": {
+    "$type": "color",
+    "white": { "$value": "#ffffff" },
+    "black": { "$value": "#000000" },
+
+    "neutral": {
+      "0":    { "$value": "#ffffff" },
+      "50":   { "$value": "#f7f8fa" },
+      "100":  { "$value": "#eef0f4" },
+      "200":  { "$value": "#dfe3ea" },
+      "300":  { "$value": "#c4cad6" },
+      "400":  { "$value": "#98a1b3" },
+      "500":  { "$value": "#767f92" },
+      "600":  { "$value": "#5a6376" },
+      "700":  { "$value": "#434b5c" },
+      "800":  { "$value": "#2b3140" },
+      "900":  { "$value": "#191d26" },
+      "950":  { "$value": "#10131a" },
+      "1000": { "$value": "#000000" }
+    },
+
+    "blue": {
+      "100": { "$value": "#dbe7ff" },
+      "200": { "$value": "#b6cdff" },
+      "300": { "$value": "#84abff" },
+      "400": { "$value": "#5285f5" },
+      "500": { "$value": "#2f66df" },
+      "600": { "$value": "#1550c4" },
+      "700": { "$value": "#0f3f9e" },
+      "800": { "$value": "#0b2f78" },
+      "900": { "$value": "#082254" }
+    },
+
+    "red": {
+      "100": { "$value": "#ffe3e0" },
+      "300": { "$value": "#ff9d94" },
+      "400": { "$value": "#f2685c" },
+      "600": { "$value": "#c0332b" },
+      "700": { "$value": "#9e2820" },
+      "800": { "$value": "#7a1e18" }
+    },
+
+    "green": {
+      "100": { "$value": "#d7f2e1" },
+      "300": { "$value": "#7fd3a1" },
+      "400": { "$value": "#40b374" },
+      "600": { "$value": "#1c7a45" },
+      "700": { "$value": "#155e35" },
+      "800": { "$value": "#0f4526" }
+    },
+
+    "amber": {
+      "100": { "$value": "#fdefd0" },
+      "300": { "$value": "#f5cd76" },
+      "400": { "$value": "#dda72c" },
+      "600": { "$value": "#8a6100" },
+      "700": { "$value": "#6b4b00" },
+      "800": { "$value": "#4d3600" }
+    },
+
+    "yellow": {
+      "hc": { "$value": "#ffff00", "$description": "High-contrast focus indicator. Maximum luminance separation from black." }
+    }
+  }
+}

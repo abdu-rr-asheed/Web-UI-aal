@@ -403,7 +403,7 @@ The proposal names `FocusTrap`, `LiveAnnouncer` and `FocusMonitor`. The implemen
 | **Vitest + `@testing-library/angular`** | 4.1.x / 19.4.x | Unit / component | Run through Angular 22's native `@angular/build:unit-test` builder (`vitest` is a first-class `@angular/build` peer). Testing Library's `getByRole` queries force tests to locate elements *the way a screen reader does* — a semantic assertion in itself. See §19.2 for why this replaces Karma/Jasmine. |
 | **`@storybook/addon-a11y`** | 10.5.x | Docs-time | Live axe results in every story (DR-01). |
 | **Chromatic** *(optional, free OSS tier)* | — | Visual regression | Focus-state, forced-colors and RTL snapshots (TR-10). |
-| **Custom contrast validator** (`wcag-contrast`, `apca-w3`) | — | Build-time | Validates every token pair in the theme matrix (TR-07). WCAG 2.x ratio is normative; APCA reported as supplementary evidence only. |
+| **Custom contrast validator** (`tools/contrast-validator`) | — | Build-time | Validates every token pair declared in `contracts.json` across all shipped themes (TR-07). The WCAG 2.x relative-luminance and contrast-ratio formulae are **implemented directly from the normative definitions** rather than taken from a dependency — the measurement underpins the entire AR-07/AR-08 claim, so it is visible, cited and unit-tested against published reference values (`#767676` on white = 4.54:1, `#595959` = 7:1, `#808080` luminance = 0.2158605). Ratios are floored, never rounded up, so a 4.4999 can never report as a pass. *Rejected:* `wcag-contrast` and `apca-w3` as dependencies — forty lines of cited arithmetic is more defensible in a dissertation than an opaque import, and NFR-09 discourages casual dependencies even in tooling. |
 
 #### 6.5.1 Angular-specific accessibility lint rules (all `error`)
 
@@ -485,7 +485,6 @@ Plus AAL's own `@aal/eslint-plugin` rules (FR-14): `require-accessible-name`, `n
 
     "style-dictionary": "^5.5.0",
     "sass": "^1.80.0",
-    "wcag-contrast": "^3.0.0",
     "@changesets/cli": "^2.27.0"
   }
 }
@@ -1217,6 +1216,8 @@ The token layer exists to make accessibility invariants **structurally unbreakab
 
 ### 10.3 Contrast enforcement (TR-07)
 
+The contrast contracts are declared explicitly in `libs/tokens/src/tokens/contracts.json` rather than inferred from the token graph. Inference silently misses the pair nobody thought to declare, and "we did not think of it" is precisely how contrast failures reach production.
+
 `tools/contrast-validator` runs on the built token set and fails the build if:
 
 - any semantic foreground/background pair scores below **4.5:1** (text) or **3:1** (large text ≥18.66 px bold / 24 px);
@@ -1224,7 +1225,13 @@ The token layer exists to make accessibility invariants **structurally unbreakab
 - the focus-ring colour scores below **3:1** against both the component background *and* the adjacent page background;
 - any theme (light, dark, high-contrast) fails any of the above.
 
-Output is `reports/contrast/<commit>.json` — the pass/fail evidence cited for AR-07/AR-08 in the dissertation.
+It additionally enforces **theme key parity**: every theme must define an identical token key set. A theme that silently omits a key inherits the base theme's colour, which is how a dark mode ends up shipping a light-mode value that nobody notices until a user reports it.
+
+Translucent tokens are composited over the theme's page surface before measurement — measuring an un-composited `rgba()` measures a colour that is never actually on screen.
+
+Output is `reports/contrast/<commit>.json` plus `latest.json` — the dated pass/fail evidence cited for AR-07/AR-08 in the dissertation.
+
+**Worked example from the first run (21 Aug 2026).** The gate failed two checks on the initial palette: `selected.bg` reached only 1.24:1 (light) and 1.20:1 (dark) against the page surface. The finding was correct — a tint that faint cannot convey selection state. The fix was *not* to darken the tint into an unreadable wash, nor to grant an exemption, but to introduce an explicit `selected.border` indicator held to 3:1, with the tint demoted to decorative reinforcement and exempted on the recorded condition that **no component may convey selection by tint alone**. This is the intended shape of the gate's influence: it changes the design, rather than being negotiated with.
 
 ### 10.4 Themes shipped
 

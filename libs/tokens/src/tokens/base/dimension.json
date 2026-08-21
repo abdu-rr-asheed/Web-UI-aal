@@ -1,0 +1,69 @@
+{
+  "$description": "Theme-agnostic dimensions. The `target` and `focus` groups are Tier 4 SEALED INVARIANTS (PRD §10.2) — they are emitted into @layer aal.invariants and are not consumer-overridable, because removing them removes WCAG conformance.",
+  "space": {
+    "$type": "dimension",
+    "0":  { "$value": "0rem" },
+    "1":  { "$value": "0.25rem" },
+    "2":  { "$value": "0.5rem" },
+    "3":  { "$value": "0.75rem" },
+    "4":  { "$value": "1rem" },
+    "5":  { "$value": "1.5rem" },
+    "6":  { "$value": "2rem" },
+    "7":  { "$value": "3rem" }
+  },
+
+  "radius": {
+    "$type": "dimension",
+    "none": { "$value": "0rem" },
+    "sm":   { "$value": "0.125rem" },
+    "md":   { "$value": "0.25rem" },
+    "lg":   { "$value": "0.5rem" },
+    "full": { "$value": "9999px" }
+  },
+
+  "target": {
+    "$type": "dimension",
+    "$description": "SC 2.5.8 Target Size (Minimum), Level AA — AR-09.",
+    "min": {
+      "$value": "24px",
+      "$description": "Absolute floor. 24 CSS px is the normative AA minimum; px not rem deliberately, because a user shrinking their root font must not shrink the hit target below the legal minimum."
+    },
+    "comfortable": {
+      "$value": "44px",
+      "$description": "Default for AAL components. Exceeds AA and meets the AAA 2.5.5 / mobile guidance."
+    }
+  },
+
+  "focus": {
+    "$description": "SC 2.4.7 Focus Visible + SC 1.4.11 Non-text Contrast — AR-05. Sized to also satisfy the AAA 2.4.13 Focus Appearance perimeter requirement, which the PRD reports as exceeding the AA target.",
+    "ring": {
+      "$type": "dimension",
+      "width":  { "$value": "2px", "$description": "Minimum perimeter thickness. Never 1px — it disappears on high-DPI displays." },
+      "offset": { "$value": "2px", "$description": "Separates the ring from the control edge so both tones stay visible." }
+    }
+  },
+
+  "border": {
+    "$type": "dimension",
+    "width": {
+      "thin":   { "$value": "1px" },
+      "medium": { "$value": "2px" }
+    }
+  },
+
+  "motion": {
+    "$type": "duration",
+    "$description": "All of these resolve to 0ms under prefers-reduced-motion (AR-20).",
+    "instant": { "$value": "0ms" },
+    "fast":    { "$value": "120ms" },
+    "medium":  { "$value": "200ms" }
+  },
+
+  "layout": {
+    "$type": "dimension",
+    "reflow-min": {
+      "$value": "320px",
+      "$description": "SC 1.4.10 Reflow — AR-17. Every component must be usable at this viewport width without two-dimensional scrolling."
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "$description": "Tier 2 semantic tokens — dark theme. Independently chosen and independently validated, NOT a naive inversion of light: inverting a palette reliably breaks contrast because perceived lightness is not symmetric. Same key set as light.json — the validator enforces parity so a missing dark override cannot ship silently.",
+  "color": {
+    "$type": "color",
+
+    "surface": {
+      "default": { "$value": "{palette.neutral.950}" },
+      "raised":  { "$value": "{palette.neutral.900}" },
+      "sunken":  { "$value": "{palette.neutral.1000}" },
+      "overlay": { "$value": "{palette.neutral.900}" },
+      "scrim":   { "$value": "#000000cc" }
+    },
+
+    "text": {
+      "default":     { "$value": "{palette.neutral.50}" },
+      "muted":       { "$value": "{palette.neutral.300}" },
+      "placeholder": { "$value": "{palette.neutral.300}" },
+      "disabled":    { "$value": "{palette.neutral.300}" },
+      "on-action":   { "$value": "{palette.neutral.950}" },
+      "on-danger":   { "$value": "{palette.neutral.950}" },
+      "link":        { "$value": "{palette.blue.300}" }
+    },
+
+    "action": {
+      "bg":          { "$value": "{palette.blue.300}", "$description": "Dark themes take a LIGHT action surface with dark text. A mid-blue with white text cannot reach 4.5:1 against a near-black page without becoming visually louder than the content." },
+      "bg-hover":    { "$value": "{palette.blue.200}" },
+      "bg-active":   { "$value": "{palette.blue.100}" },
+      "bg-disabled": { "$value": "{palette.neutral.800}" },
+      "border":      { "$value": "{palette.blue.300}" }
+    },
+
+    "danger": {
+      "bg":      { "$value": "{palette.red.300}" },
+      "text":    { "$value": "{palette.red.300}" },
+      "border":  { "$value": "{palette.red.300}" },
+      "surface": { "$value": "{palette.red.800}" }
+    },
+
+    "success": {
+      "text":    { "$value": "{palette.green.300}" },
+      "border":  { "$value": "{palette.green.300}" },
+      "surface": { "$value": "{palette.green.800}" }
+    },
+
+    "warning": {
+      "text":    { "$value": "{palette.amber.300}" },
+      "border":  { "$value": "{palette.amber.300}" },
+      "surface": { "$value": "{palette.amber.800}" }
+    },
+
+    "border": {
+      "default": { "$value": "{palette.neutral.500}" },
+      "strong":  { "$value": "{palette.neutral.300}" },
+      "subtle":  { "$value": "{palette.neutral.800}" }
+    },
+
+    "field": {
+      "bg":             { "$value": "{palette.neutral.900}" },
+      "bg-disabled":    { "$value": "{palette.neutral.800}" },
+      "border":         { "$value": "{palette.neutral.500}" },
+      "border-hover":   { "$value": "{palette.neutral.300}" },
+      "border-invalid": { "$value": "{palette.red.300}" }
+    },
+
+    "selected": {
+      "border": { "$value": "{palette.blue.300}", "$description": "The ACTUAL selection indicator. Must meet 3:1 against the page surface (SC 1.4.11) because it is what makes the state perceivable. The bg tint below only reinforces it." },
+      "bg":   { "$value": "{palette.blue.900}" },
+      "text": { "$value": "{palette.blue.100}" }
+    },
+
+    "focus": {
+      "outer": { "$value": "{palette.neutral.0}", "$description": "Tones swap roles in dark mode: the light tone carries the contrast against a dark page." },
+      "inner": { "$value": "{palette.neutral.950}" }
+    }
+  }
+}

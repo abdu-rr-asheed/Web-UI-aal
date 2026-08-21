@@ -1,0 +1,47 @@
+{
+  "$description": "Type scale in rem so browser text-size settings and 200% zoom work (SC 1.4.4 / AR-18). No px font sizes anywhere — a px scale silently defeats the user's own accessibility setting.",
+  "font": {
+    "family": {
+      "$type": "fontFamily",
+      "sans": {
+        "$value": ["system-ui", "-apple-system", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"]
+      },
+      "mono": {
+        "$value": ["ui-monospace", "SFMono-Regular", "Consolas", "Liberation Mono", "monospace"]
+      }
+    },
+
+    "size": {
+      "$type": "dimension",
+      "xs": { "$value": "0.75rem" },
+      "sm": { "$value": "0.875rem" },
+      "md": { "$value": "1rem" },
+      "lg": { "$value": "1.125rem" },
+      "xl": { "$value": "1.5rem" },
+      "2xl": { "$value": "2rem" },
+      "large-text-threshold": {
+        "$value": "1.5rem",
+        "$description": "SC 1.4.3 defines 'large text' as >=18.66px bold or >=24px regular. At a 16px root that is 1.5rem — the point at which the 3:1 ratio applies instead of 4.5:1. The contrast validator reads this value; it is not decorative."
+      }
+    },
+
+    "weight": {
+      "$type": "fontWeight",
+      "regular": { "$value": 400 },
+      "medium":  { "$value": 500 },
+      "bold":    { "$value": 700 }
+    },
+
+    "lineHeight": {
+      "$type": "number",
+      "tight": { "$value": 1.25, "$description": "Headings only." },
+      "body":  { "$value": 1.5, "$description": "SC 1.4.12 Text Spacing requires content to survive 1.5x line height — AR-18. Shipping 1.5 by default means user overrides cause no reflow surprise." }
+    },
+
+    "letterSpacing": {
+      "$type": "dimension",
+      "normal": { "$value": "0em" },
+      "wide":   { "$value": "0.12em", "$description": "SC 1.4.12 upper bound the layout must tolerate." }
+    }
+  }
+}

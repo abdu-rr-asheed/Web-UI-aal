@@ -1,0 +1,342 @@
+/**
+ * AAL design tokens — GENERATED, DO NOT EDIT.
+ * Source: libs/tokens/src/tokens/**. Rebuild with `npm run tokens:build`.
+ *
+ * Every colour pairing below is verified against libs/tokens/src/tokens/contracts.json
+ * by tools/contrast-validator on every build (TR-07). A failing pair fails CI.
+ */
+
+@layer aal.tokens, aal.invariants;
+
+@layer aal.tokens {
+  /* Theme-agnostic scale. */
+  :root {
+    --aal-border-width-medium: 2px;
+    --aal-border-width-thin: 1px;
+    --aal-font-family-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    --aal-font-family-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --aal-font-letterSpacing-normal: 0em;
+    --aal-font-letterSpacing-wide: 0.12em;
+    --aal-font-lineHeight-body: 1.5;
+    --aal-font-lineHeight-tight: 1.25;
+    --aal-font-size-2xl: 2rem;
+    --aal-font-size-large-text-threshold: 1.5rem;
+    --aal-font-size-lg: 1.125rem;
+    --aal-font-size-md: 1rem;
+    --aal-font-size-sm: 0.875rem;
+    --aal-font-size-xl: 1.5rem;
+    --aal-font-size-xs: 0.75rem;
+    --aal-font-weight-bold: 700;
+    --aal-font-weight-medium: 500;
+    --aal-font-weight-regular: 400;
+    --aal-layout-reflow-min: 320px;
+    --aal-motion-fast: 120ms;
+    --aal-motion-instant: 0ms;
+    --aal-motion-medium: 200ms;
+    --aal-radius-full: 9999px;
+    --aal-radius-lg: 0.5rem;
+    --aal-radius-md: 0.25rem;
+    --aal-radius-none: 0rem;
+    --aal-radius-sm: 0.125rem;
+    --aal-space-0: 0rem;
+    --aal-space-1: 0.25rem;
+    --aal-space-2: 0.5rem;
+    --aal-space-3: 0.75rem;
+    --aal-space-4: 1rem;
+    --aal-space-5: 1.5rem;
+    --aal-space-6: 2rem;
+    --aal-space-7: 3rem;
+  }
+
+  /* light — the default, and the fallback when nothing else matches. */
+  :root {
+    --aal-color-action-bg: #1550c4;
+    --aal-color-action-bg-active: #0b2f78;
+    --aal-color-action-bg-disabled: #eef0f4;
+    --aal-color-action-bg-hover: #0f3f9e;
+    --aal-color-action-border: #1550c4;
+    --aal-color-border-default: #767f92;
+    --aal-color-border-strong: #434b5c;
+    --aal-color-border-subtle: #dfe3ea;
+    --aal-color-danger-bg: #9e2820;
+    --aal-color-danger-border: #9e2820;
+    --aal-color-danger-surface: #ffe3e0;
+    --aal-color-danger-text: #9e2820;
+    --aal-color-field-bg: #ffffff;
+    --aal-color-field-bg-disabled: #eef0f4;
+    --aal-color-field-border: #767f92;
+    --aal-color-field-border-hover: #434b5c;
+    --aal-color-field-border-invalid: #9e2820;
+    --aal-color-focus-inner: #ffffff;
+    --aal-color-focus-outer: #10131a;
+    --aal-color-selected-bg: #dbe7ff;
+    --aal-color-selected-border: #1550c4;
+    --aal-color-selected-text: #082254;
+    --aal-color-success-border: #155e35;
+    --aal-color-success-surface: #d7f2e1;
+    --aal-color-success-text: #155e35;
+    --aal-color-surface-default: #ffffff;
+    --aal-color-surface-overlay: #ffffff;
+    --aal-color-surface-raised: #f7f8fa;
+    --aal-color-surface-scrim: #10131abf;
+    --aal-color-surface-sunken: #eef0f4;
+    --aal-color-text-default: #10131a;
+    --aal-color-text-disabled: #5a6376;
+    --aal-color-text-link: #0f3f9e;
+    --aal-color-text-muted: #5a6376;
+    --aal-color-text-on-action: #ffffff;
+    --aal-color-text-on-danger: #ffffff;
+    --aal-color-text-placeholder: #5a6376;
+    --aal-color-warning-border: #6b4b00;
+    --aal-color-warning-surface: #fdefd0;
+    --aal-color-warning-text: #6b4b00;
+  }
+
+  /* System preference: dark. Yields to an explicit light/high-contrast choice. */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-aal-theme="light"]):not([data-aal-theme="high-contrast"]) {
+      --aal-color-action-bg: #84abff;
+      --aal-color-action-bg-active: #dbe7ff;
+      --aal-color-action-bg-disabled: #2b3140;
+      --aal-color-action-bg-hover: #b6cdff;
+      --aal-color-action-border: #84abff;
+      --aal-color-border-default: #767f92;
+      --aal-color-border-strong: #c4cad6;
+      --aal-color-border-subtle: #2b3140;
+      --aal-color-danger-bg: #ff9d94;
+      --aal-color-danger-border: #ff9d94;
+      --aal-color-danger-surface: #7a1e18;
+      --aal-color-danger-text: #ff9d94;
+      --aal-color-field-bg: #191d26;
+      --aal-color-field-bg-disabled: #2b3140;
+      --aal-color-field-border: #767f92;
+      --aal-color-field-border-hover: #c4cad6;
+      --aal-color-field-border-invalid: #ff9d94;
+      --aal-color-focus-inner: #10131a;
+      --aal-color-focus-outer: #ffffff;
+      --aal-color-selected-bg: #082254;
+      --aal-color-selected-border: #84abff;
+      --aal-color-selected-text: #dbe7ff;
+      --aal-color-success-border: #7fd3a1;
+      --aal-color-success-surface: #0f4526;
+      --aal-color-success-text: #7fd3a1;
+      --aal-color-surface-default: #10131a;
+      --aal-color-surface-overlay: #191d26;
+      --aal-color-surface-raised: #191d26;
+      --aal-color-surface-scrim: #000000cc;
+      --aal-color-surface-sunken: #000000;
+      --aal-color-text-default: #f7f8fa;
+      --aal-color-text-disabled: #c4cad6;
+      --aal-color-text-link: #84abff;
+      --aal-color-text-muted: #c4cad6;
+      --aal-color-text-on-action: #10131a;
+      --aal-color-text-on-danger: #10131a;
+      --aal-color-text-placeholder: #c4cad6;
+      --aal-color-warning-border: #f5cd76;
+      --aal-color-warning-surface: #4d3600;
+      --aal-color-warning-text: #f5cd76;
+    }
+  }
+
+  /* Explicit choice: dark. */
+  :root[data-aal-theme="dark"] {
+    --aal-color-action-bg: #84abff;
+    --aal-color-action-bg-active: #dbe7ff;
+    --aal-color-action-bg-disabled: #2b3140;
+    --aal-color-action-bg-hover: #b6cdff;
+    --aal-color-action-border: #84abff;
+    --aal-color-border-default: #767f92;
+    --aal-color-border-strong: #c4cad6;
+    --aal-color-border-subtle: #2b3140;
+    --aal-color-danger-bg: #ff9d94;
+    --aal-color-danger-border: #ff9d94;
+    --aal-color-danger-surface: #7a1e18;
+    --aal-color-danger-text: #ff9d94;
+    --aal-color-field-bg: #191d26;
+    --aal-color-field-bg-disabled: #2b3140;
+    --aal-color-field-border: #767f92;
+    --aal-color-field-border-hover: #c4cad6;
+    --aal-color-field-border-invalid: #ff9d94;
+    --aal-color-focus-inner: #10131a;
+    --aal-color-focus-outer: #ffffff;
+    --aal-color-selected-bg: #082254;
+    --aal-color-selected-border: #84abff;
+    --aal-color-selected-text: #dbe7ff;
+    --aal-color-success-border: #7fd3a1;
+    --aal-color-success-surface: #0f4526;
+    --aal-color-success-text: #7fd3a1;
+    --aal-color-surface-default: #10131a;
+    --aal-color-surface-overlay: #191d26;
+    --aal-color-surface-raised: #191d26;
+    --aal-color-surface-scrim: #000000cc;
+    --aal-color-surface-sunken: #000000;
+    --aal-color-text-default: #f7f8fa;
+    --aal-color-text-disabled: #c4cad6;
+    --aal-color-text-link: #84abff;
+    --aal-color-text-muted: #c4cad6;
+    --aal-color-text-on-action: #10131a;
+    --aal-color-text-on-danger: #10131a;
+    --aal-color-text-placeholder: #c4cad6;
+    --aal-color-warning-border: #f5cd76;
+    --aal-color-warning-surface: #4d3600;
+    --aal-color-warning-text: #f5cd76;
+  }
+
+  /* System preference: more contrast. Yields to an explicit light/dark choice. */
+  @media (prefers-contrast: more) {
+    :root:not([data-aal-theme="light"]):not([data-aal-theme="dark"]) {
+      --aal-color-action-bg: #ffffff;
+      --aal-color-action-bg-active: #b6cdff;
+      --aal-color-action-bg-disabled: #000000;
+      --aal-color-action-bg-hover: #dbe7ff;
+      --aal-color-action-border: #ffffff;
+      --aal-color-border-default: #ffffff;
+      --aal-color-border-strong: #ffffff;
+      --aal-color-border-subtle: #98a1b3;
+      --aal-color-danger-bg: #ff9d94;
+      --aal-color-danger-border: #ff9d94;
+      --aal-color-danger-surface: #000000;
+      --aal-color-danger-text: #ff9d94;
+      --aal-color-field-bg: #000000;
+      --aal-color-field-bg-disabled: #000000;
+      --aal-color-field-border: #ffffff;
+      --aal-color-field-border-hover: #b6cdff;
+      --aal-color-field-border-invalid: #ff9d94;
+      --aal-color-focus-inner: #000000;
+      --aal-color-focus-outer: #ffff00;
+      --aal-color-selected-bg: #ffffff;
+      --aal-color-selected-border: #ffffff;
+      --aal-color-selected-text: #000000;
+      --aal-color-success-border: #7fd3a1;
+      --aal-color-success-surface: #000000;
+      --aal-color-success-text: #7fd3a1;
+      --aal-color-surface-default: #000000;
+      --aal-color-surface-overlay: #000000;
+      --aal-color-surface-raised: #000000;
+      --aal-color-surface-scrim: #000000e6;
+      --aal-color-surface-sunken: #000000;
+      --aal-color-text-default: #ffffff;
+      --aal-color-text-disabled: #c4cad6;
+      --aal-color-text-link: #b6cdff;
+      --aal-color-text-muted: #ffffff;
+      --aal-color-text-on-action: #000000;
+      --aal-color-text-on-danger: #000000;
+      --aal-color-text-placeholder: #ffffff;
+      --aal-color-warning-border: #f5cd76;
+      --aal-color-warning-surface: #000000;
+      --aal-color-warning-text: #f5cd76;
+    }
+  }
+
+  /* Explicit choice: high contrast. */
+  :root[data-aal-theme="high-contrast"] {
+    --aal-color-action-bg: #ffffff;
+    --aal-color-action-bg-active: #b6cdff;
+    --aal-color-action-bg-disabled: #000000;
+    --aal-color-action-bg-hover: #dbe7ff;
+    --aal-color-action-border: #ffffff;
+    --aal-color-border-default: #ffffff;
+    --aal-color-border-strong: #ffffff;
+    --aal-color-border-subtle: #98a1b3;
+    --aal-color-danger-bg: #ff9d94;
+    --aal-color-danger-border: #ff9d94;
+    --aal-color-danger-surface: #000000;
+    --aal-color-danger-text: #ff9d94;
+    --aal-color-field-bg: #000000;
+    --aal-color-field-bg-disabled: #000000;
+    --aal-color-field-border: #ffffff;
+    --aal-color-field-border-hover: #b6cdff;
+    --aal-color-field-border-invalid: #ff9d94;
+    --aal-color-focus-inner: #000000;
+    --aal-color-focus-outer: #ffff00;
+    --aal-color-selected-bg: #ffffff;
+    --aal-color-selected-border: #ffffff;
+    --aal-color-selected-text: #000000;
+    --aal-color-success-border: #7fd3a1;
+    --aal-color-success-surface: #000000;
+    --aal-color-success-text: #7fd3a1;
+    --aal-color-surface-default: #000000;
+    --aal-color-surface-overlay: #000000;
+    --aal-color-surface-raised: #000000;
+    --aal-color-surface-scrim: #000000e6;
+    --aal-color-surface-sunken: #000000;
+    --aal-color-text-default: #ffffff;
+    --aal-color-text-disabled: #c4cad6;
+    --aal-color-text-link: #b6cdff;
+    --aal-color-text-muted: #ffffff;
+    --aal-color-text-on-action: #000000;
+    --aal-color-text-on-danger: #000000;
+    --aal-color-text-placeholder: #ffffff;
+    --aal-color-warning-border: #f5cd76;
+    --aal-color-warning-surface: #000000;
+    --aal-color-warning-text: #f5cd76;
+  }
+}
+
+@layer aal.invariants {
+  /**
+   * Tier 4 SEALED INVARIANTS (PRD §10.2, AR-05, AR-09).
+   *
+   * !important on a custom-property declaration wins against consumer
+   * overrides. This is the mechanism behind the PRD's "no accessibility-critical
+   * override" principle: a consumer can retheme every colour in the library and
+   * still cannot delete the focus indicator or shrink a target below 24px.
+   */
+  :root {
+    --aal-focus-ring-offset: 2px !important;
+    --aal-focus-ring-width: 2px !important;
+    --aal-target-comfortable: 44px !important;
+    --aal-target-min: 24px !important;
+  }
+
+  /**
+   * Forced-colors (Windows Contrast Themes) — AR-19.
+   *
+   * Custom colours are discarded by the OS here, so a token-only theme would
+   * leave components invisible. System colour keywords are mapped explicitly
+   * and borders are forced visible, so shape-only affordances survive.
+   */
+  @media (forced-colors: active) {
+    :root {
+      --aal-color-surface-default: Canvas !important;
+      --aal-color-surface-raised: Canvas !important;
+      --aal-color-surface-sunken: Canvas !important;
+      --aal-color-surface-overlay: Canvas !important;
+      --aal-color-text-default: CanvasText !important;
+      --aal-color-text-muted: CanvasText !important;
+      --aal-color-text-placeholder: GrayText !important;
+      --aal-color-text-disabled: GrayText !important;
+      --aal-color-text-link: LinkText !important;
+      --aal-color-text-on-action: ButtonFace !important;
+      --aal-color-text-on-danger: ButtonFace !important;
+      --aal-color-action-bg: ButtonText !important;
+      --aal-color-action-bg-hover: Highlight !important;
+      --aal-color-action-bg-active: Highlight !important;
+      --aal-color-action-bg-disabled: ButtonFace !important;
+      --aal-color-action-border: ButtonText !important;
+      --aal-color-border-default: CanvasText !important;
+      --aal-color-border-strong: CanvasText !important;
+      --aal-color-border-subtle: CanvasText !important;
+      --aal-color-field-bg: Field !important;
+      --aal-color-field-bg-disabled: Canvas !important;
+      --aal-color-field-border: CanvasText !important;
+      --aal-color-field-border-hover: Highlight !important;
+      --aal-color-field-border-invalid: CanvasText !important;
+      --aal-color-selected-bg: Highlight !important;
+      --aal-color-selected-text: HighlightText !important;
+      --aal-color-danger-text: CanvasText !important;
+      --aal-color-success-text: CanvasText !important;
+      --aal-color-warning-text: CanvasText !important;
+      --aal-color-focus-outer: Highlight !important;
+      --aal-color-focus-inner: Canvas !important;
+    }
+  }
+
+  /* AR-20 — honour the user's motion preference globally, not per component. */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --aal-motion-fast: 0ms !important;
+      --aal-motion-medium: 0ms !important;
+    }
+  }
+}

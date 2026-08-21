@@ -107,7 +107,8 @@ const main = async () => {
     ['ESLint (a11y rules + layer boundaries)', 'npm run lint --silent', 'AR-*, §7.6', () => 'lint' in scripts && ['eslint.config.js', 'eslint.config.mjs', 'eslint.config.cjs', '.eslintrc.json'].some((f) => existsSync(resolve(ROOT, f)))],
     ['Stylelint (focus/token guards)', 'npx stylelint "libs/**/*.{css,scss}"', 'AR-05, §10.5', () => existsSync(resolve(ROOT, '.stylelintrc.json')) || existsSync(resolve(ROOT, 'stylelint.config.js'))],
     ['TypeScript', 'npm run typecheck --silent', '—', () => existsSync(resolve(ROOT, 'tools/typecheck.mjs'))],
-    ['Contrast validator', 'npm run tokens:validate --silent', 'TR-07', () => 'tokens:validate' in scripts],
+    ['Contrast validator (all themes)', 'npm run tokens:validate --silent', 'TR-07', () => 'tokens:validate' in scripts],
+    ['Build-tooling tests', 'npm run test:tools --silent', 'TR-07', () => 'test:tools' in scripts],
     [
       `Unit + component a11y${affected ? ` [${affected.join(', ') || 'none affected'}]` : ' [all]'}`,
       testCommand(),

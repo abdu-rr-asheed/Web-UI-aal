@@ -13,7 +13,10 @@
     "lint:styles": "stylelint \"libs/**/*.{css,scss}\"",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "node tools/typecheck.mjs"
+    "typecheck": "node tools/typecheck.mjs",
+    "tokens:build": "node libs/tokens/build-tokens.mjs",
+    "tokens:validate": "node libs/tokens/build-tokens.mjs && node tools/contrast-validator/index.mjs --themes light,dark,high-contrast",
+    "test:tools": "vitest run --config vitest.tools.config.mjs"
   },
   "private": true,
   "packageManager": "npm@11.12.1",
@@ -35,6 +38,7 @@
     "jsdom": "^28.0.0",
     "ng-packagr": "^22.1.0",
     "prettier": "^3.8.1",
+    "style-dictionary": "^5.5.2",
     "typescript": "~6.0.2",
     "vitest": "^4.0.8"
   },
