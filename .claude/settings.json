@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "Bash(npm run:*)",
+      "Bash(npm ci)",
+      "Bash(npm test:*)",
+      "Bash(npm ls:*)",
+      "Bash(npm view:*)",
+      "Bash(npx ng:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npx stylelint:*)",
+      "Bash(npx vitest:*)",
+      "Bash(npx playwright test:*)",
+      "Bash(npx lhci:*)",
+      "Bash(npx pa11y-ci:*)",
+      "Bash(npx tsx:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git add:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Bash(find:*)",
+      "WebFetch(domain:www.w3.org)",
+      "WebFetch(domain:w3.org)",
+      "WebFetch(domain:developer.mozilla.org)",
+      "WebFetch(domain:angular.dev)",
+      "WebFetch(domain:material.angular.dev)",
+      "WebFetch(domain:dequeuniversity.com)",
+      "WebFetch(domain:webaim.org)"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(npm publish:*)",
+      "Bash(gh repo create:*)",
+      "Bash(gh release:*)"
+    ],
+    "deny": [
+      "Read(./research/data/**)",
+      "Read(./.env)",
+      "Read(./**/*.pem)",
+      "Bash(rm -rf:*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/pre-commit-gate.mjs",
+            "timeout": 120
+          }
+        ]
+      }
+    ]
+  }
+}
