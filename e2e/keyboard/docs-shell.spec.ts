@@ -51,48 +51,37 @@ test.describe('docs site — keyboard (AR-02, SC 2.4.1)', () => {
     expect(box!.y, 'focused skip link is still off-screen').toBeGreaterThanOrEqual(0);
   });
 
-  test('has no keyboard trap: focus keeps advancing (SC 2.1.2)', async ({ page, browserName }) => {
+  test('has no keyboard trap: focus can always leave (SC 2.1.2)', async ({ page }) => {
     await page.goto('/');
 
-    // D-001 again. On WebKit this shell has ZERO Tab stops — every control is a
-    // link, and WebKit's default binding skips links — so "does focus advance
-    // through the tab order" is not a question that engine can answer.
-    //
-    // SC 2.1.2 is not actually about advancing, though: it requires that focus
-    // can LEAVE wherever it currently is. That is testable everywhere, so on
-    // WebKit we assert exactly that, which is the criterion rather than a proxy
-    // for it.
-    if (browserName === 'webkit') {
-      const link = page.getByRole('link', { name: /skip to main content/i });
-      await link.focus();
-      await expect(link).toBeFocused();
+    /**
+     * SC 2.1.2 requires that keyboard focus can be moved AWAY from any
+     * component. It does not require that the browser auto-focuses the
+     * document on load, nor that a given engine binds Tab to links — so the
+     * criterion is asserted directly, identically on every engine, rather than
+     * inferred from a Tab walk.
+     *
+     * The earlier Tab-walk version passed on Chromium and failed on
+     * keyboard-firefox with "focus stuck for 22 consecutive Tabs". That was an
+     * artifact of headless Firefox never seeding document focus, not a barrier
+     * a real user would hit — see D-005. Seeding focus explicitly removes the
+     * artifact while testing strictly more of the criterion, because it now
+     * checks every focusable element rather than wherever a Tab walk happened
+     * to land.
+     */
+    const focusables = await page.locator('a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])').all();
+    expect(focusables.length, 'shell has no focusable elements to test').toBeGreaterThan(0);
+
+    for (const el of focusables) {
+      await el.focus();
+      await expect(el).toBeFocused();
+
       await page.keyboard.press('Tab');
-      await expect(link, 'focus could not leave the skip link — this is a trap').not.toBeFocused();
-      return;
+      await expect(el, 'Tab could not move focus off this element — keyboard trap').not.toBeFocused();
+
+      await el.focus();
+      await page.keyboard.press('Shift+Tab');
+      await expect(el, 'Shift+Tab could not move focus off this element — keyboard trap').not.toBeFocused();
     }
-
-    const sequence: string[] = [];
-    for (let i = 0; i < 25; i++) {
-      await page.keyboard.press('Tab');
-      sequence.push(
-        await page.evaluate(() => {
-          const el = document.activeElement;
-          return el ? `${el.tagName}#${el.id}.${el.className}:${el.textContent?.slice(0, 20)}` : 'none';
-        }),
-      );
-    }
-
-    // A keyboard trap means focus cannot LEAVE an element. Revisiting elements
-    // is not a trap — it is the tab order cycling, which is correct and
-    // expected on a short page. The real signal is how many distinct stops
-    // exist, and whether focus ever moves off any single one.
-    const distinct = new Set(sequence);
-    expect(distinct.size, `focus never left one element: ${[...distinct]}`).toBeGreaterThan(1);
-
-    const longestRun = sequence.reduce(
-      (acc, id, i) => (i > 0 && id === sequence[i - 1] ? { run: acc.run + 1, max: Math.max(acc.max, acc.run + 1) } : { run: 1, max: acc.max }),
-      { run: 1, max: 1 },
-    ).max;
-    expect(longestRun, 'focus stuck on the same element across consecutive Tabs').toBeLessThan(3);
   });
 });

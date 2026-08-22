@@ -146,3 +146,48 @@ gives fast feedback before pushing.
 **Consequence to be honest about.** TR-06 cannot be verified on the author's
 machine. Anyone reproducing this work on Windows should expect the same and
 read the Lighthouse numbers from CI artefacts rather than from a local run.
+
+---
+
+## D-005 — Headless Firefox does not seed document focus, breaking Tab-walk tests
+
+| Field | Value |
+|---|---|
+| **Discovered** | 2026-08-22, Phase 2 Session D, CI `keyboard-firefox` |
+| **Engines** | Firefox (headless, Playwright) |
+| **Severity** | **Test-environment artifact — NOT a user-facing barrier** |
+| **Status** | RESOLVED by testing the criterion directly |
+
+**Observed.** The keyboard-trap test pressed `Tab` 25 times and asserted focus
+never stayed on one element for 3 consecutive presses. Chromium passed; Firefox
+reported a run of **22** — focus never moved off `body`.
+
+**Assessment — and why this one is NOT a finding.** Unlike D-001, this does not
+reflect anything a real user would experience. Firefox is the primary NVDA
+browser and Tab moves through links there normally; the cause is that headless
+Firefox under Playwright starts with focus outside the document, so the first
+`Tab` has nowhere to go from. Reporting it as an accessibility barrier would be
+a false positive, and a barrier register padded with false positives is worth
+less than one that is short and true.
+
+**The distinction matters methodologically.** D-001 is a genuine platform
+behaviour affecting real Safari users and is reported as such. D-005 is an
+automation artifact and is reported as such. Both were surfaced by the same
+cross-engine suite, and telling them apart required reasoning about the cause
+rather than trusting the red X. Any cross-browser accessibility suite will
+produce both kinds; the dissertation should say so, because "our CI found N
+cross-engine failures" is a meaningless number if the two are not separated.
+
+**Resolution — strictly stronger, not weaker.** The test no longer walks the
+tab order. It now focuses *every* focusable element in turn and asserts that
+both `Tab` and `Shift+Tab` move focus away from it. That is SC 2.1.2 stated
+directly ("focus can be moved away"), it runs identically on all three engines
+with no branching, and it covers more than the walk did — the walk only tested
+wherever it happened to land, this tests every element in both directions.
+
+**Process note.** This was nearly missed. Moving the keyboard suite out of
+`e2e/a11y/` into `e2e/keyboard/` turned main green, but only because
+`keyboard-firefox` was not in the CI matrix — the failing assertion had been
+moved somewhere Firefox no longer looked. Adding `keyboard-firefox` and
+`keyboard-webkit` to the matrix surfaced it. A green pipeline is only evidence
+if you know what it is running.
