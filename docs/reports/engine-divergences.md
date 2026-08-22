@@ -178,7 +178,9 @@ rather than trusting the red X. Any cross-browser accessibility suite will
 produce both kinds; the dissertation should say so, because "our CI found N
 cross-engine failures" is a meaningless number if the two are not separated.
 
-**Resolution — strictly stronger, not weaker.** The test no longer walks the
+**Resolution (second iteration).** The first attempt — focus every element and assert Tab/Shift+Tab move away — still failed on Firefox, but for a different and more interesting reason: `Shift+Tab` from the FIRST focusable element hands focus to browser chrome, which headless Firefox does not have. Chromium reports `body`; Firefox leaves `activeElement` unchanged. Neither is wrong, and no page-level test can distinguish "focus left the document" from "focus did not move". The final test therefore excludes exactly two cases — Shift+Tab from the first focusable, Tab from the last — and asserts every in-document transition in both directions. That is the largest set of transitions the page can actually control and observe.
+
+**Original resolution note — strictly stronger, not weaker.** The test no longer walks the
 tab order. It now focuses *every* focusable element in turn and asserts that
 both `Tab` and `Shift+Tab` move focus away from it. That is SC 2.1.2 stated
 directly ("focus can be moved away"), it runs identically on all three engines

@@ -69,19 +69,41 @@ test.describe('docs site — keyboard (AR-02, SC 2.4.1)', () => {
      * checks every focusable element rather than wherever a Tab walk happened
      * to land.
      */
-    const focusables = await page.locator('a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])').all();
+    const focusables = await page
+      .locator('a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])')
+      .all();
     expect(focusables.length, 'shell has no focusable elements to test').toBeGreaterThan(0);
 
-    for (const el of focusables) {
-      await el.focus();
-      await expect(el).toBeFocused();
+    /**
+     * Boundary elements are excluded, and precisely:
+     *
+     *   - Shift+Tab from the FIRST focusable hands focus to browser chrome
+     *   - Tab from the LAST focusable does the same
+     *
+     * Both are correct behaviour and neither is observable from inside the
+     * page, so a page-level test cannot distinguish "focus left the document"
+     * from "focus did not move". Headless Firefox exposed this by leaving
+     * activeElement unchanged where Chromium reports body (D-005). Excluding
+     * exactly the two boundary cases keeps every in-document transition under
+     * test while asserting nothing the page can neither control nor observe.
+     */
+    for (const [i, el] of focusables.entries()) {
+      const isFirst = i === 0;
+      const isLast = i === focusables.length - 1;
 
-      await page.keyboard.press('Tab');
-      await expect(el, 'Tab could not move focus off this element — keyboard trap').not.toBeFocused();
+      if (!isLast) {
+        await el.focus();
+        await expect(el).toBeFocused();
+        await page.keyboard.press('Tab');
+        await expect(el, `Tab could not move focus off focusable #${i} — keyboard trap`).not.toBeFocused();
+      }
 
-      await el.focus();
-      await page.keyboard.press('Shift+Tab');
-      await expect(el, 'Shift+Tab could not move focus off this element — keyboard trap').not.toBeFocused();
+      if (!isFirst) {
+        await el.focus();
+        await expect(el).toBeFocused();
+        await page.keyboard.press('Shift+Tab');
+        await expect(el, `Shift+Tab could not move focus off focusable #${i} — keyboard trap`).not.toBeFocused();
+      }
     }
   });
 });
