@@ -115,3 +115,34 @@ methodology on. It is the reason TR-04 and TR-08 mandate real browsers, and the
 reason `e2e/a11y/docs-site.spec.ts` contains a test asserting the
 `color-contrast` rule actually *executed* — a contrast rule that reports nothing
 because it could not run is indistinguishable from a pass.
+
+---
+
+## D-004 — Lighthouse CI cannot clean up its Chrome profile on this Windows machine
+
+| Field | Value |
+|---|---|
+| **Discovered** | 2026-08-22, Phase 2 Session D |
+| **Environment** | Windows 11, local only |
+| **Severity** | Blocks local TR-06 verification; does not affect CI |
+| **Status** | ACCEPTED — CI is the system of record for Lighthouse |
+
+**Observed.** `lhci autorun` completes every audit, then fails during teardown:
+`EPERM, Permission denied: \?\C:\Users\...\AppData\Local\Temp\lighthouse.<id>`.
+chrome-launcher cannot remove its temporary profile directory, and lhci exits 1
+with no report written.
+
+**Assessment.** The audits themselves ran to completion — the failure is in
+cleanup, not measurement. Most likely Defender or another watcher holding a
+handle on the temp directory, which is the same family of cause as D-002.
+
+**Decision.** Not worked around locally. Lighthouse is a **page-level** gate
+that only needs to run somewhere reproducible, and CI (ubuntu-latest) is that
+place; a local pass would add no evidence CI does not already provide. The
+locally-runnable half of the gate — ESLint, Stylelint, contrast validation,
+Vitest/axe, and Playwright on Chromium and WebKit — is unaffected and still
+gives fast feedback before pushing.
+
+**Consequence to be honest about.** TR-06 cannot be verified on the author's
+machine. Anyone reproducing this work on Windows should expect the same and
+read the Lighthouse numbers from CI artefacts rather than from a local run.

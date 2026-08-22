@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "docs",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start:docs"],
+      "port": 4200
+    },
+    {
+      "name": "storybook",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "storybook"],
+      "port": 6006
+    },
+    {
+      "name": "playground",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["ng", "serve", "playground", "--port", "4300"],
+      "port": 4300
+    }
+  ]
+}

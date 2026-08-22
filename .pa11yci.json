@@ -1,0 +1,11 @@
+{
+  "defaults": {
+    "standard": "WCAG2AA",
+    "runners": ["htmlcs"],
+    "timeout": 60000,
+    "chromeLaunchConfig": { "args": ["--no-sandbox", "--disable-dev-shm-usage"] },
+    "reporters": ["cli", ["json", { "fileName": "./reports/pa11y/results.json" }]],
+    "threshold": 0
+  },
+  "urls": ["http://localhost:4173/"]
+}
