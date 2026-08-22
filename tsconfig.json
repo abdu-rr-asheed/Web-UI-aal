@@ -19,9 +19,9 @@
       "@aal/a11y-core": ["./libs/a11y-core/src/public-api.ts"],
       "@aal/a11y-core/*": ["./libs/a11y-core/src/lib/*"],
       "@aal/primitives": ["./libs/primitives/src/public-api.ts"],
-      "@aal/primitives/*": ["./libs/primitives/src/lib/*"],
+      "@aal/primitives/*": ["./libs/primitives/*/src/public-api.ts"],
       "@aal/components": ["./libs/components/src/public-api.ts"],
-      "@aal/components/*": ["./libs/components/src/lib/*"]
+      "@aal/components/*": ["./libs/components/*/src/public-api.ts"]
     }
   },
   "angularCompilerOptions": {

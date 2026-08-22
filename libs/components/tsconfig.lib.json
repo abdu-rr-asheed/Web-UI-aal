@@ -6,8 +6,21 @@
     "outDir": "../../out-tsc/lib",
     "declaration": true,
     "declarationMap": true,
-    "types": []
+    "types": [],
+    /*
+     * The workspace tsconfig maps @aal/* to SOURCE for a fast dev and test loop
+     * (ADR-0011). A library build must NOT do that: pulling a sibling package's
+     * source into this entry point's compilation puts files outside its rootDir
+     * (TS6059) and would inline code that should stay external. Siblings are
+     * declared peer dependencies, so here they resolve to built output.
+     */
+    "paths": {
+      "@aal/tokens": ["../../dist/tokens"],
+      "@aal/a11y-core": ["../../dist/a11y-core"],
+      "@aal/primitives": ["../../dist/primitives"],
+      "@aal/primitives/*": ["../../dist/primitives/*"]
+    }
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "*/src/**/*.ts"],
   "exclude": ["**/*.spec.ts"]
 }

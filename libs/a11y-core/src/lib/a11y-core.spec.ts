@@ -294,6 +294,34 @@ describe('A11yAssertService (FR-08)', () => {
     }
   });
 
+  it('does NOT count aria-hidden content as an accessible name', () => {
+    // Regression. The first implementation used plain textContent, so an
+    // icon-only button containing <span aria-hidden="true">x</span> looked
+    // named — and the assertion silently never fired in exactly the case it
+    // exists to catch. Found by the Button suite, fixed here at source.
+    setup('throw');
+    expect(() =>
+      assert.assertAccessibleName(el('<button><span aria-hidden="true">x</span></button>'), 'aal-button'),
+    ).toThrow(/no accessible name/);
+  });
+
+  it('does not count [hidden] content as an accessible name either', () => {
+    setup('throw');
+    expect(() =>
+      assert.assertAccessibleName(el('<button><span hidden>Save</span></button>'), 'aal-button'),
+    ).toThrow(/no accessible name/);
+  });
+
+  it('still counts visible text alongside an aria-hidden icon', () => {
+    setup('throw');
+    expect(() =>
+      assert.assertAccessibleName(
+        el('<button><span aria-hidden="true">+</span>Add item</button>'),
+        'aal-button',
+      ),
+    ).not.toThrow();
+  });
+
   it('reports missing required ARIA for a role', () => {
     setup('throw');
     expect(() =>

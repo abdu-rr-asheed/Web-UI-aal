@@ -67,7 +67,7 @@
     "primitives": {
       "projectType": "library",
       "root": "libs/primitives",
-      "sourceRoot": "libs/primitives/src",
+      "sourceRoot": "libs/primitives",
       "prefix": "aal",
       "architect": {
         "build": {
@@ -88,6 +88,9 @@
             "tsConfig": "libs/primitives/tsconfig.spec.json",
             "setupFiles": [
               "testing/vitest-setup.ts"
+            ],
+            "include": [
+              "**/*.spec.ts"
             ]
           }
         }
@@ -96,7 +99,7 @@
     "components": {
       "projectType": "library",
       "root": "libs/components",
-      "sourceRoot": "libs/components/src",
+      "sourceRoot": "libs/components",
       "prefix": "aal",
       "architect": {
         "build": {
@@ -117,6 +120,9 @@
             "tsConfig": "libs/components/tsconfig.spec.json",
             "setupFiles": [
               "testing/vitest-setup.ts"
+            ],
+            "include": [
+              "**/*.spec.ts"
             ]
           }
         }

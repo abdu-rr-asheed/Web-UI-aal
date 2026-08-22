@@ -1,0 +1,171 @@
+/**
+ * Button styles (PRD §9.1).
+ *
+ * Tokens only — no hard-coded colours. A literal hex here would bypass the
+ * contrast gate, dark mode, high-contrast mode and forced-colors support all
+ * at once, which is why Stylelint rejects them (AR-07/AR-08).
+ */
+
+.aal-button {
+  /* AR-09 / SC 2.5.8. The floor is 24px; the default is comfortably above it.
+     Deliberately px, not rem: a user who shrinks their root font must not end
+     up with a hit target below the legal minimum. */
+  min-block-size: var(--aal-target-comfortable);
+  min-inline-size: var(--aal-target-comfortable);
+
+  display: inline-flex;
+  gap: var(--aal-space-2);
+  align-items: center;
+  justify-content: center;
+  padding: var(--aal-space-2) var(--aal-space-4);
+  border: var(--aal-border-width-thin) solid transparent;
+  border-radius: var(--aal-radius-md);
+
+  font-family: inherit;
+  /* rem so browser text-size settings and 200% zoom work (AR-18). */
+  font-size: var(--aal-font-size-md);
+  font-weight: var(--aal-font-weight-medium);
+  line-height: var(--aal-font-lineheight-body);
+
+  cursor: pointer;
+  transition:
+    background-color var(--aal-motion-fast) ease,
+    border-color var(--aal-motion-fast) ease;
+}
+
+/* AR-05 / SC 2.4.7 — the two-tone ring. One tone always clears 3:1 against
+   whatever the consumer put behind the control, which is the whole point of
+   having two. Width and offset are sealed Tier 4 tokens: consumer CSS cannot
+   shrink or remove them (PRD §10.2). */
+.aal-button:focus-visible {
+  outline: var(--aal-focus-ring-width) solid var(--aal-color-focus-outer);
+  outline-offset: var(--aal-focus-ring-offset);
+  box-shadow: 0 0 0 var(--aal-focus-ring-width) var(--aal-color-focus-inner);
+}
+
+/* Variants ---------------------------------------------------------------- */
+
+.aal-button--primary {
+  background: var(--aal-color-action-bg);
+  border-color: var(--aal-color-action-border);
+  color: var(--aal-color-text-on-action);
+}
+
+.aal-button--primary:hover:not([aria-disabled='true'], :disabled) {
+  background: var(--aal-color-action-bg-hover);
+}
+
+.aal-button--primary:active:not([aria-disabled='true'], :disabled) {
+  background: var(--aal-color-action-bg-active);
+}
+
+.aal-button--secondary {
+  background: var(--aal-color-surface-default);
+  border-color: var(--aal-color-border-default);
+  color: var(--aal-color-text-default);
+}
+
+.aal-button--secondary:hover:not([aria-disabled='true'], :disabled) {
+  background: var(--aal-color-surface-raised);
+  border-color: var(--aal-color-border-strong);
+}
+
+.aal-button--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--aal-color-text-link);
+}
+
+.aal-button--ghost:hover:not([aria-disabled='true'], :disabled) {
+  background: var(--aal-color-surface-raised);
+}
+
+.aal-button--danger {
+  background: var(--aal-color-danger-bg);
+  border-color: var(--aal-color-danger-border);
+  color: var(--aal-color-text-on-danger);
+}
+
+/* Sizes ------------------------------------------------------------------- */
+
+.aal-button--small {
+  /* Even the small size stays above the 24px SC 2.5.8 floor. */
+  min-block-size: var(--aal-target-min);
+  padding: var(--aal-space-1) var(--aal-space-3);
+  font-size: var(--aal-font-size-sm);
+}
+
+.aal-button--large {
+  padding: var(--aal-space-3) var(--aal-space-5);
+  font-size: var(--aal-font-size-lg);
+}
+
+/* States ------------------------------------------------------------------ */
+
+/* Covers both the native attribute and the aria-disabled form used while
+   loading, so the two look identical to a sighted user. */
+.aal-button:disabled,
+.aal-button[aria-disabled='true'] {
+  background: var(--aal-color-action-bg-disabled);
+  border-color: var(--aal-color-border-default);
+  color: var(--aal-color-text-disabled);
+  cursor: not-allowed;
+}
+
+.aal-button__label {
+  /* Keeps the label from collapsing when the spinner appears alongside it. */
+  display: inline-block;
+}
+
+.aal-button__spinner {
+  inline-size: 1em;
+  block-size: 1em;
+  border: var(--aal-border-width-medium) solid currentcolor;
+  border-block-start-color: transparent;
+  border-radius: var(--aal-radius-full);
+  animation: aal-button-spin var(--aal-motion-medium) linear infinite;
+}
+
+@keyframes aal-button-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* AR-20 / SC 2.3.1. The token already resolves to 0ms under this preference,
+   but the animation must also stop rotating — a 0ms infinite animation still
+   spins. */
+@media (prefers-reduced-motion: reduce) {
+  .aal-button {
+    transition: none;
+  }
+
+  .aal-button__spinner {
+    animation: none;
+    /* Keep a static indicator so the busy state stays visible without motion. */
+    border-block-start-color: currentcolor;
+    opacity: 0.5;
+  }
+}
+
+/* AR-19 / forced-colors. Custom colours are discarded by the OS here, so the
+   boundary must be forced visible or the button becomes an unmarked patch of
+   text. Buttons distinguished only by background colour disappear entirely. */
+@media (forced-colors: active) {
+  .aal-button {
+    border-color: ButtonText;
+    forced-color-adjust: none;
+    background: ButtonFace;
+    color: ButtonText;
+  }
+
+  .aal-button:focus-visible {
+    outline-color: Highlight;
+  }
+
+  .aal-button:disabled,
+  .aal-button[aria-disabled='true'] {
+    color: GrayText;
+    border-color: GrayText;
+  }
+}

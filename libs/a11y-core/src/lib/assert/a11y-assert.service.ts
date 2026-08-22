@@ -138,8 +138,34 @@ export class A11yAssertService {
 
     // An image's alt text contributes to the name of a control wrapping it.
     const alt = el.querySelector('img[alt]')?.getAttribute('alt')?.trim();
-    const text = el.textContent?.trim();
-    return text || alt || '';
+    return this.visibleText(el) || alt || '';
+  }
+
+  /**
+   * Text content EXCLUDING aria-hidden subtrees.
+   *
+   * Plain `textContent` was the original implementation and it was wrong in
+   * precisely the case this service exists to catch: an icon-only button
+   * containing `<span aria-hidden="true">x</span>` has non-empty textContent
+   * but a completely empty accessible name. Counting hidden text as a name
+   * meant the icon-only assertion silently never fired.
+   */
+  private visibleText(el: Element): string {
+    let text = '';
+
+    for (const node of Array.from(el.childNodes)) {
+      if (node.nodeType === 3 /* Node.TEXT_NODE */) {
+        text += node.textContent ?? '';
+        continue;
+      }
+      if (!(node instanceof Element)) continue;
+      if (node.getAttribute('aria-hidden') === 'true') continue;
+      if (node.hasAttribute('hidden')) continue;
+
+      text += this.visibleText(node);
+    }
+
+    return text.trim();
   }
 
   /** Test-only: clear the dedupe cache between cases. */
