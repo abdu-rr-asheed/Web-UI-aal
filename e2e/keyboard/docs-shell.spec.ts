@@ -69,8 +69,21 @@ test.describe('docs site — keyboard (AR-02, SC 2.4.1)', () => {
      * checks every focusable element rather than wherever a Tab walk happened
      * to land.
      */
+    // Disabled controls are excluded deliberately: a disabled element is
+    // CORRECTLY not focusable, so asserting that focus can leave it would be
+    // asserting a bug. The docs shell now renders a real disabled AAL button,
+    // which is what surfaced this.
     const focusables = await page
-      .locator('a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])')
+      .locator(
+        [
+          'a[href]',
+          'button:not([disabled])',
+          'input:not([disabled])',
+          'select:not([disabled])',
+          'textarea:not([disabled])',
+          '[tabindex]:not([tabindex="-1"])',
+        ].join(', '),
+      )
       .all();
     expect(focusables.length, 'shell has no focusable elements to test').toBeGreaterThan(0);
 

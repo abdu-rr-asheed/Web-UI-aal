@@ -1,23 +1,52 @@
 <!--
-  Docs app shell. This app is the Lighthouse and Playwright audit target
-  (PRD NFR-13, TR-06) and the environment for the November usability study
-  (PRD §13.3), so its own structure must satisfy AR-24: skip link first,
-  correct landmarks with unique names, one <h1>, no skipped heading levels.
+  Docs app shell, now built from AAL's own components (dogfooding).
+
+  This app is the Lighthouse and Playwright audit target (NFR-13, TR-06) and
+  the environment for the November usability study (§13.3). Using the real
+  components here means the audit exercises the library rather than
+  hand-written markup that merely resembles it — and any regression in
+  SkipLink or Link fails the docs-site E2E suite immediately.
 -->
-<a class="skip-link" href="#main">Skip to main content</a>
+<aal-skip-link targetId="main" />
 
 <header class="app-header">
   <nav aria-label="Primary">
     <ul>
-      <li><a href="/" aria-current="page">Home</a></li>
-      <li><a href="/components">Components</a></li>
-      <li><a href="/reports">Audit reports</a></li>
+      <li><aal-link href="/" current="page" [underline]="false">Home</aal-link></li>
+      <li><aal-link href="/components" [underline]="false">Components</aal-link></li>
+      <li><aal-link href="/reports" [underline]="false">Audit reports</aal-link></li>
     </ul>
   </nav>
 </header>
 
 <main id="main" tabindex="-1">
   <h1>{{ title() }}</h1>
+
+  <section aria-labelledby="demo-heading">
+    <h2 id="demo-heading">Component demo</h2>
+    <p>
+      Live components from the library. Press <kbd>Tab</kbd> to see the focus ring, and try
+      switching your system to dark mode or high contrast.
+    </p>
+
+    <div class="demo-row">
+      <aal-button variant="primary">Save changes</aal-button>
+      <aal-button variant="secondary">Cancel</aal-button>
+      <aal-button variant="danger">Delete account</aal-button>
+      <aal-button variant="primary" [disabled]="true">Unavailable</aal-button>
+      <aal-button variant="primary" [loading]="true">Saving</aal-button>
+      <aal-button ariaLabel="Close notification">
+        <span aria-hidden="true">✕</span>
+      </aal-button>
+    </div>
+
+    <p>
+      <aal-link href="https://www.w3.org/TR/WCAG22/" [newTab]="true">
+        Read the WCAG 2.2 specification
+      </aal-link>
+    </p>
+  </section>
+
   <router-outlet />
 </main>
 

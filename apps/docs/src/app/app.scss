@@ -80,3 +80,19 @@ main {
   padding: var(--aal-space-4);
   color: var(--aal-color-text-muted);
 }
+
+.demo-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--aal-space-3);
+  align-items: center;
+  margin-block: var(--aal-space-4);
+}
+
+kbd {
+  padding: 0 var(--aal-space-1);
+  border: var(--aal-border-width-thin) solid var(--aal-color-border-default);
+  border-radius: var(--aal-radius-sm);
+  font-family: var(--aal-font-family-mono);
+  font-size: var(--aal-font-size-sm);
+}

@@ -1,0 +1,59 @@
+/**
+ * Skip link (SC 2.4.1).
+ *
+ * Hidden using the clip technique, NOT display:none — display:none would take
+ * it out of the tab order, making the one control that exists for keyboard
+ * users unreachable by keyboard.
+ */
+
+.aal-skip-link {
+  position: absolute;
+  inset-block-start: var(--aal-space-2);
+  inset-inline-start: var(--aal-space-2);
+
+  /* AR-09 / SC 2.5.8 — a real target, not a sliver. */
+  min-block-size: var(--aal-target-comfortable);
+
+  display: inline-flex;
+  align-items: center;
+  padding: var(--aal-space-2) var(--aal-space-4);
+  border: var(--aal-border-width-medium) solid var(--aal-color-border-strong);
+  border-radius: var(--aal-radius-md);
+
+  background: var(--aal-color-surface-default);
+  color: var(--aal-color-text-default);
+  font-family: inherit;
+  font-size: var(--aal-font-size-md);
+  text-decoration: underline;
+
+  /* Off-screen until focused. Above everything, since the whole point is to be
+     visible the instant it receives focus. */
+  z-index: 1000;
+  transform: translateY(calc(-100% - var(--aal-space-4)));
+}
+
+.aal-skip-link:focus-visible,
+.aal-skip-link:focus {
+  transform: translateY(0);
+  outline: var(--aal-focus-ring-width) solid var(--aal-color-focus-outer);
+  outline-offset: var(--aal-focus-ring-offset);
+  box-shadow: 0 0 0 var(--aal-focus-ring-width) var(--aal-color-focus-inner);
+}
+
+/* AR-20. The reveal must be instant under reduced motion — a skip link that
+   slides into place is a skip link the user is waiting on. */
+@media (prefers-reduced-motion: reduce) {
+  .aal-skip-link {
+    transition: none;
+  }
+}
+
+/* AR-19 — forced colors discards custom colours, so the boundary has to be
+   forced or the revealed link is unreadable text on the page behind it. */
+@media (forced-colors: active) {
+  .aal-skip-link {
+    background: Canvas;
+    color: LinkText;
+    border-color: LinkText;
+  }
+}

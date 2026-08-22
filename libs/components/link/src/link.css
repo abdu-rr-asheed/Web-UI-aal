@@ -1,0 +1,74 @@
+/**
+ * Link (PRD §9.9).
+ *
+ * Underlined by default: SC 1.4.1 forbids colour as the sole means of
+ * conveying information, and "this is a link" is information.
+ */
+
+.aal-link {
+  color: var(--aal-color-text-link);
+  text-decoration: underline;
+  /* Descenders should not be sliced by the underline — a legibility issue for
+     dyslexic readers in particular. */
+  text-underline-offset: 0.15em;
+  border-radius: var(--aal-radius-sm);
+}
+
+.aal-link:hover {
+  text-decoration-thickness: var(--aal-border-width-medium);
+}
+
+/* AR-05. Inline links can wrap across lines, so the ring must follow every
+   fragment rather than boxing the bounding rectangle. */
+.aal-link:focus-visible {
+  outline: var(--aal-focus-ring-width) solid var(--aal-color-focus-outer);
+  outline-offset: var(--aal-focus-ring-offset);
+  box-shadow: 0 0 0 var(--aal-focus-ring-width) var(--aal-color-focus-inner);
+}
+
+.aal-link--subtle {
+  color: var(--aal-color-text-default);
+}
+
+.aal-link--inverse {
+  color: var(--aal-color-text-on-action);
+}
+
+/*
+ * Opt-out of the underline. Only legitimate where the surrounding design
+ * distinguishes links some other way — a nav bar, for example. The underline
+ * returns on hover and focus regardless, so the affordance is never entirely
+ * absent.
+ */
+.aal-link--no-underline {
+  text-decoration: none;
+}
+
+.aal-link--no-underline:hover,
+.aal-link--no-underline:focus-visible {
+  text-decoration: underline;
+}
+
+/* Current page. Carries a thicker underline as well as a colour change, so the
+   state is not conveyed by colour alone (AR-13). */
+.aal-link[aria-current] {
+  text-decoration-thickness: var(--aal-border-width-medium);
+  font-weight: var(--aal-font-weight-medium);
+}
+
+.aal-link__external-icon {
+  display: inline-block;
+  margin-inline-start: var(--aal-space-1);
+  /* Sized in em so it tracks the text at any zoom level (AR-18). */
+  font-size: 0.85em;
+}
+
+@media (forced-colors: active) {
+  .aal-link {
+    color: LinkText;
+  }
+
+  .aal-link:focus-visible {
+    outline-color: Highlight;
+  }
+}

@@ -72,7 +72,7 @@ export type AalButtonType = 'button' | 'submit' | 'reset';
       [attr.aria-controls]="controls() || null"
       [attr.aria-haspopup]="hasPopup() || null"
       [attr.aria-describedby]="describedBy() || null"
-      [attr.aria-disabled]="inactive() ? 'true' : null"
+      [attr.aria-disabled]="loading() ? 'true' : null"
       [attr.aria-busy]="loading() ? 'true' : null"
       [disabled]="disabled() && !loading()"
       (click)="activate($event)"
@@ -128,7 +128,15 @@ export class AalButton {
 
   readonly activated = output<MouseEvent>();
 
-  /** Disabled or loading — either way, activation is refused. */
+  /**
+   * Disabled or loading — either way, activation is refused.
+   *
+   * Note the template exposes `aria-disabled` only while LOADING, not when
+   * natively disabled. A natively-disabled element already communicates the
+   * state through the platform accessibility API; adding `aria-disabled` on
+   * top is redundant and some screen readers announce it twice. The two
+   * mechanisms are alternatives, not partners.
+   */
   protected readonly inactive = computed(() => this.disabled() || this.loading());
 
   constructor() {

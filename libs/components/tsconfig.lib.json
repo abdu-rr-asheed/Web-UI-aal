@@ -18,7 +18,14 @@
       "@aal/tokens": ["../../dist/tokens"],
       "@aal/a11y-core": ["../../dist/a11y-core"],
       "@aal/primitives": ["../../dist/primitives"],
-      "@aal/primitives/*": ["../../dist/primitives/*"]
+      "@aal/primitives/*": ["../../dist/primitives/*"],
+      /*
+       * One entry point importing another within this same package — Link uses
+       * VisuallyHidden for its "(opens in a new tab)" text. ng-packagr resolves
+       * these internally during a build and orders the entry points correctly;
+       * this mapping is what lets a standalone `tsc --noEmit` follow them too.
+       */
+      "@aal/components/*": ["./*/src/public-api.ts"]
     }
   },
   "include": ["src/**/*.ts", "*/src/**/*.ts"],

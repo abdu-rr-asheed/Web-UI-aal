@@ -35,7 +35,10 @@ const config: StorybookConfig = {
 
   framework: {
     name: '@storybook/angular-vite',
-    options: {},
+    options: {
+      // Compodoc feeds the autodocs API tables DR-01 requires (PRD §6.7).
+      enableCompodoc: true,
+    },
   },
 
   staticDirs: [{ from: '../libs/tokens/src/styles', to: '/tokens' }],

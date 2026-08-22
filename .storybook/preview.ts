@@ -1,4 +1,4 @@
-import type { Preview } from '@storybook/angular';
+import type { Preview } from '@storybook/angular-vite';
 import { AAL_THEMES } from '../libs/tokens/src/lib/tokens.generated';
 
 // Token stylesheet first — @layer order is fixed by first declaration, and the
