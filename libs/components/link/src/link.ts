@@ -110,6 +110,7 @@ export class AalLink {
       if (!anchor) return;
 
       this.assert.assertAccessibleName(anchor, 'aal-link');
+      this.assert.assertLabelInName(anchor, 'aal-link');
 
       // SC 2.4.4 Link Purpose. "Click here" and "read more" are meaningless in
       // a screen reader's link list, which is presented out of context — the

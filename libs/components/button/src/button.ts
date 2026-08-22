@@ -144,11 +144,18 @@ export class AalButton {
       // Checks the RENDERED name, not whether an input was supplied: projected
       // content, aria-label and aria-labelledby can each provide it, and only
       // the computed result reveals whether one actually did.
+      const button = this.host.nativeElement.querySelector('button') ?? this.host.nativeElement;
+
       this.assert.assertAccessibleName(
-        this.host.nativeElement.querySelector('button') ?? this.host.nativeElement,
+        button,
         'aal-button',
         'https://github.com/abdu-rr-asheed/Web-UI-aal/blob/main/docs/patterns/button.md',
       );
+
+      // SC 2.5.3 — an ariaLabel that does not contain the visible text makes
+      // the control unoperable by voice. Invisible to axe and to screen-reader
+      // testing, which is exactly why it is asserted.
+      this.assert.assertLabelInName(button, 'aal-button');
     });
   }
 

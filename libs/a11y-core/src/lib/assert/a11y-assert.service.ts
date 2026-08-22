@@ -70,6 +70,42 @@ export class A11yAssertService {
     );
   }
 
+  /**
+   * SC 2.5.3 Label in Name (Level A).
+   *
+   * When a control has visible text, its accessible name must CONTAIN that
+   * text. The failure is invisible to screen-reader testing and to axe, which
+   * is why it is asserted here:
+   *
+   *   <aal-button ariaLabel="Close">Cancel</aal-button>
+   *
+   * reads fine to a screen-reader user — they hear "Close" — but a
+   * voice-control user sees the word "Cancel" and says "click Cancel", and
+   * nothing happens. Speech recognition matches against the accessible name,
+   * not the pixels. The control is, for them, unoperable.
+   *
+   * Comparison is case-insensitive and whitespace-normalised, since neither
+   * affects what a speech engine matches.
+   */
+  assertLabelInName(el: Element, component: string): void {
+    if (!this.enabled) return;
+
+    const ariaLabel = el.getAttribute('aria-label')?.trim();
+    if (!ariaLabel) return; // no override, so no mismatch possible
+
+    const visible = this.visibleText(el);
+    if (!visible) return; // icon-only: aria-label IS the name, correctly
+
+    const normalise = (s: string) => s.toLowerCase().replace(/\s+/g, ' ').trim();
+    if (normalise(ariaLabel).includes(normalise(visible))) return;
+
+    this.fail(
+      'SC 2.5.3',
+      `<${component}> shows "${visible}" but its accessible name is "${ariaLabel}". A voice-control user reads the visible text and says "click ${visible}" — speech recognition matches the accessible NAME, so nothing happens and the control is unoperable for them.`,
+      `Either drop ariaLabel and let the visible text be the name, or make ariaLabel start with "${visible}" — e.g. "${visible}, opens in a new window".`,
+    );
+  }
+
   /** A role's required ARIA properties must be present (SC 4.1.2). */
   assertRequiredAria(el: Element, role: string, required: readonly string[], component: string): void {
     if (!this.enabled) return;

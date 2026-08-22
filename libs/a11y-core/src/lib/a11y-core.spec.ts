@@ -322,6 +322,62 @@ describe('A11yAssertService (FR-08)', () => {
     ).not.toThrow();
   });
 
+  describe('SC 2.5.3 Label in Name', () => {
+    it('fails when aria-label does not contain the visible text', () => {
+      // Invisible to axe and to screen-reader testing: the SR user hears
+      // "Close" and is happy. A voice-control user reads "Cancel" on screen,
+      // says "click Cancel", and nothing happens — the control is unoperable
+      // for them. Found during the Sprint 1 adversarial review.
+      setup('throw');
+      expect(() =>
+        assert.assertLabelInName(el('<button aria-label="Close">Cancel</button>'), 'aal-button'),
+      ).toThrow(/SC 2.5.3/);
+    });
+
+    it('explains the voice-control impact, not just the rule number', () => {
+      setup('throw');
+      try {
+        assert.assertLabelInName(el('<button aria-label="Close">Cancel</button>'), 'aal-button');
+        throw new Error('should have thrown');
+      } catch (e) {
+        expect((e as Error).message).toMatch(/says "click Cancel"/);
+      }
+    });
+
+    it('passes when aria-label CONTAINS the visible text', () => {
+      // The legitimate pattern: extend the visible name, do not replace it.
+      setup('throw');
+      expect(() =>
+        assert.assertLabelInName(
+          el('<button aria-label="Delete, opens a confirmation">Delete</button>'),
+          'aal-button',
+        ),
+      ).not.toThrow();
+    });
+
+    it('ignores case and whitespace, which speech engines also ignore', () => {
+      setup('throw');
+      expect(() =>
+        assert.assertLabelInName(el('<button aria-label="save  CHANGES">Save changes</button>'), 'aal-button'),
+      ).not.toThrow();
+    });
+
+    it('does NOT fire for icon-only controls, where aria-label is the whole name', () => {
+      setup('throw');
+      expect(() =>
+        assert.assertLabelInName(
+          el('<button aria-label="Close"><span aria-hidden="true">x</span></button>'),
+          'aal-button',
+        ),
+      ).not.toThrow();
+    });
+
+    it('does not fire when there is no aria-label at all', () => {
+      setup('throw');
+      expect(() => assert.assertLabelInName(el('<button>Cancel</button>'), 'aal-button')).not.toThrow();
+    });
+  });
+
   it('reports missing required ARIA for a role', () => {
     setup('throw');
     expect(() =>
