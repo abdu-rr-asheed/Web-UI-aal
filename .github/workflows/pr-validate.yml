@@ -136,7 +136,7 @@ jobs:
     strategy:
       fail-fast: false # one engine's failure must not hide another's
       matrix:
-        project: [a11y-chromium, a11y-firefox, a11y-webkit, keyboard]
+        project: [a11y-chromium, a11y-firefox, a11y-webkit, keyboard, keyboard-firefox, keyboard-webkit]
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
