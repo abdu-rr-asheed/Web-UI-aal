@@ -64,7 +64,7 @@ jobs:
             exit 1
           fi
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: always()
         with:
           name: contrast-report
@@ -87,7 +87,7 @@ jobs:
       - name: Vitest + jest-axe
         run: npm run test:ci -- --coverage
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: always()
         with:
           name: coverage
@@ -118,7 +118,7 @@ jobs:
       - name: Build Storybook
         run: npm run build-storybook
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: docs-dist
           path: dist/docs/browser/
@@ -154,7 +154,7 @@ jobs:
       - name: Run ${{ matrix.project }}
         run: npx playwright test --project=${{ matrix.project }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: always()
         with:
           name: playwright-${{ matrix.project }}
@@ -174,7 +174,7 @@ jobs:
           cache: npm
       - run: npm ci
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           name: docs-dist
           path: dist/docs/browser
@@ -197,7 +197,7 @@ jobs:
           curl -sf http://localhost:4173/ >/dev/null || { echo "::error::static server never came up"; exit 1; }
           npx pa11y-ci --config .pa11yci.json
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: always()
         with:
           name: page-audit-reports

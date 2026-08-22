@@ -27,8 +27,16 @@ export default defineConfig({
   retries: 0,
   workers: CI ? 2 : undefined,
 
+  // 'github' emits ::error:: annotations, which surface the failure inline on
+  // the PR diff AND make it readable through the check-runs annotations API —
+  // downloading raw job logs needs auth, annotations do not.
   reporter: CI
-    ? [['list'], ['json', { outputFile: 'reports/playwright/results.json' }], ['html', { open: 'never', outputFolder: 'reports/playwright/html' }]]
+    ? [
+        ['github'],
+        ['list'],
+        ['json', { outputFile: 'reports/playwright/results.json' }],
+        ['html', { open: 'never', outputFolder: 'reports/playwright/html' }],
+      ]
     : [['list']],
 
   use: {
