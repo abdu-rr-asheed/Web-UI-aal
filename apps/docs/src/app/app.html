@@ -74,6 +74,20 @@
 
       <aal-radio-group legend="Delivery method" [options]="deliveryOptions" [required]="true" />
 
+      <!--
+        The native select is the recommended default for single-select from a
+        flat list; the custom one exists for multi-select. Both are shown so
+        the E2E suite exercises each in a real browser.
+      -->
+      <aal-native-select
+        label="Country"
+        [options]="countryOptions"
+        [required]="true"
+        hint="Where the order will be delivered"
+      />
+
+      <aal-select label="Delivery add-ons" [options]="countryOptions" [multiple]="true" />
+
       <aal-checkbox hint="We send one email a month, and you can unsubscribe at any time">
         Email me about order updates
       </aal-checkbox>

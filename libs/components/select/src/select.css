@@ -1,0 +1,174 @@
+/**
+ * Select — native and custom (PRD §9.4).
+ */
+
+.aal-select {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--aal-space-1);
+  margin-block-end: var(--aal-space-4);
+}
+
+.aal-select__label {
+  font-size: var(--aal-font-size-md);
+  font-weight: var(--aal-font-weight-medium);
+  color: var(--aal-color-text-default);
+  cursor: pointer;
+}
+
+.aal-select__hint {
+  margin: 0;
+  font-size: var(--aal-font-size-sm);
+  color: var(--aal-color-text-muted);
+}
+
+/* Trigger and native control share a look so the two components are visually
+   interchangeable — the choice between them should be about behaviour, not
+   about how they sit in a form. */
+.aal-select__trigger,
+.aal-select__native {
+  /* AR-09 / SC 2.5.8 */
+  min-block-size: var(--aal-target-comfortable);
+
+  display: flex;
+  gap: var(--aal-space-2);
+  align-items: center;
+  justify-content: space-between;
+  inline-size: 100%;
+  padding: var(--aal-space-2) var(--aal-space-3);
+  border: var(--aal-border-width-thin) solid var(--aal-color-field-border);
+  border-radius: var(--aal-radius-md);
+  background: var(--aal-color-field-bg);
+  color: var(--aal-color-text-default);
+
+  font-family: inherit;
+  font-size: var(--aal-font-size-md);
+  text-align: start;
+  cursor: pointer;
+}
+
+.aal-select__trigger:hover:not(:disabled),
+.aal-select__native:hover:not(:disabled) {
+  border-color: var(--aal-color-field-border-hover);
+}
+
+/* AR-05 — sealed tokens; consumer CSS cannot shrink or remove this. */
+.aal-select__trigger:focus-visible,
+.aal-select__native:focus-visible {
+  outline: var(--aal-focus-ring-width) solid var(--aal-color-focus-outer);
+  outline-offset: var(--aal-focus-ring-offset);
+  box-shadow: 0 0 0 var(--aal-focus-ring-width) var(--aal-color-focus-inner);
+}
+
+.aal-select__trigger:disabled,
+.aal-select__native:disabled {
+  background: var(--aal-color-field-bg-disabled);
+  color: var(--aal-color-text-disabled);
+  cursor: not-allowed;
+}
+
+.aal-select--invalid .aal-select__trigger,
+.aal-select--invalid .aal-select__native {
+  border-color: var(--aal-color-field-border-invalid);
+  border-width: var(--aal-border-width-medium);
+}
+
+.aal-select__value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/*
+ * Positioned BELOW the trigger and never over it.
+ *
+ * SC 2.4.11 Focus Not Obscured: focus stays on the trigger while the list is
+ * open, so a popup overlapping it would hide the focused element. This is why
+ * the list is not free-positioned by an overlay.
+ */
+.aal-select__listbox {
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline: 0;
+  z-index: 10;
+
+  max-block-size: 16rem;
+  margin: var(--aal-space-1) 0 0;
+  padding: var(--aal-space-1);
+  overflow-y: auto;
+  list-style: none;
+
+  border: var(--aal-border-width-thin) solid var(--aal-color-border-default);
+  border-radius: var(--aal-radius-md);
+  background: var(--aal-color-surface-overlay);
+}
+
+.aal-select__option {
+  display: flex;
+  gap: var(--aal-space-2);
+  align-items: center;
+  /* AR-09 — options are pointer targets too. */
+  min-block-size: var(--aal-target-min);
+  padding: var(--aal-space-2);
+  border-radius: var(--aal-radius-sm);
+  cursor: pointer;
+}
+
+/*
+ * The ACTIVE option carries a visible marker of its own, not just a background
+ * tint. The trigger holds real focus, so the browser paints no focus ring
+ * here — without an explicit indicator a sighted keyboard user cannot tell
+ * where they are in the list (AR-05).
+ */
+.aal-select__option--active {
+  background: var(--aal-color-selected-bg);
+  outline: var(--aal-border-width-medium) solid var(--aal-color-selected-border);
+  outline-offset: calc(var(--aal-border-width-medium) * -1);
+}
+
+/* Selection is shown by a tick AND a colour, never colour alone (AR-13). */
+.aal-select__option--selected {
+  font-weight: var(--aal-font-weight-medium);
+}
+
+.aal-select__check {
+  inline-size: 1em;
+  flex-shrink: 0;
+}
+
+.aal-select__option[aria-disabled='true'] {
+  color: var(--aal-color-text-disabled);
+  cursor: not-allowed;
+}
+
+.aal-select__error {
+  display: flex;
+  gap: var(--aal-space-1);
+  align-items: flex-start;
+  margin: 0;
+  font-size: var(--aal-font-size-sm);
+  font-weight: var(--aal-font-weight-medium);
+  color: var(--aal-color-danger-text);
+}
+
+@media (forced-colors: active) {
+  .aal-select__trigger,
+  .aal-select__native,
+  .aal-select__listbox {
+    border-color: CanvasText;
+  }
+
+  .aal-select__trigger:focus-visible,
+  .aal-select__native:focus-visible {
+    outline-color: Highlight;
+  }
+
+  /* Custom colours are discarded here, so the active option needs a system
+     colour or the user loses track of where they are in the list. */
+  .aal-select__option--active {
+    background: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+}

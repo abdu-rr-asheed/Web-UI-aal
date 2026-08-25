@@ -5,10 +5,12 @@ import { AalLink } from '@aal/components/link';
 import { AalSkipLink } from '@aal/components/skip-link';
 import { AalTextField } from '@aal/components/text-field';
 import { AalCheckbox, AalRadioGroup, AalSwitch } from '@aal/components/choice';
+import { AalNativeSelect, AalSelect } from '@aal/components/select';
+import type { AalSelectOption } from '@aal/components/select';
 import type { AalRadioOption } from '@aal/components/choice';
 
 @Component({
-  imports: [RouterOutlet, AalButton, AalLink, AalSkipLink, AalTextField, AalCheckbox, AalSwitch, AalRadioGroup],
+  imports: [RouterOutlet, AalButton, AalLink, AalSkipLink, AalTextField, AalCheckbox, AalSwitch, AalRadioGroup, AalSelect, AalNativeSelect],
   selector: 'aal-root',
   styleUrl: './app.scss',
   templateUrl: './app.html',
@@ -22,5 +24,14 @@ export class App {
     { value: 'standard', label: 'Standard delivery', hint: 'Arrives in 3–5 working days' },
     { value: 'express', label: 'Express delivery', hint: 'Next working day' },
     { value: 'collect', label: 'Click and collect' },
+  ];
+
+  protected readonly countryOptions: AalSelectOption[] = [
+    { value: 'uk', label: 'United Kingdom' },
+    { value: 'ie', label: 'Ireland' },
+    { value: 'fr', label: 'France' },
+    { value: 'de', label: 'Germany' },
+    { value: 'es', label: 'Spain' },
+    { value: 'ru', label: 'Russia', disabled: true },
   ];
 }
