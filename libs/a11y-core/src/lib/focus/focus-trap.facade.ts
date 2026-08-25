@@ -144,14 +144,27 @@ export class FocusTrapFacade {
   }
 
   /**
-   * Already-inert elements are skipped, so a nested dialog closing does not
-   * un-inert the page for the dialog still open behind it. Live regions are
-   * skipped because announcements must keep working while a dialog is open.
+   * Which siblings may be marked inert.
+   *
+   * Three exclusions, each for a different reason:
+   *
+   * - **CDK focus-trap anchors.** These are the invisible sentinels CDK
+   *   inserts either side of the container to wrap Tab back into it, and they
+   *   are SIBLINGS of the container — so the naive walk inerted them and broke
+   *   the trap outright. Focus escaped after three Tab presses, which is the
+   *   single most important property of a modal dialog. Found by the Playwright
+   *   suite; invisible in jsdom, which has no tab order.
+   * - **Already-inert elements**, so a nested dialog closing does not un-inert
+   *   the page for the dialog still open behind it.
+   * - **Live regions**, because announcements must keep working while a dialog
+   *   is open.
    */
   private shouldInert(node: Element): node is HTMLElement {
     if (!(node instanceof HTMLElement)) return false;
     if (node.hasAttribute('inert')) return false;
-    return !node.hasAttribute('aria-live') && !node.querySelector('[aria-live]');
+    if (node.classList.contains('cdk-focus-trap-anchor')) return false;
+    if (node.hasAttribute('aria-live') || node.querySelector('[aria-live]')) return false;
+    return true;
   }
 
   /**

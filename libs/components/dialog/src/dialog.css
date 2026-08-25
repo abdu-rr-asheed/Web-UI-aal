@@ -1,0 +1,133 @@
+/**
+ * Modal dialog (PRD §9.5).
+ */
+
+.aal-dialog__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--aal-color-surface-scrim);
+}
+
+.aal-dialog {
+  position: fixed;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 101;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--aal-space-3);
+
+  /* SC 1.4.10 Reflow — must stay usable at 320 CSS px. min() rather than a
+     fixed width so the dialog shrinks with the viewport instead of forcing
+     horizontal scrolling. */
+  inline-size: min(90vw, 32rem);
+  max-block-size: min(90vh, 44rem);
+  overflow-y: auto;
+
+  padding: var(--aal-space-5);
+  border: var(--aal-border-width-thin) solid var(--aal-color-border-default);
+  border-radius: var(--aal-radius-lg);
+  background: var(--aal-color-surface-overlay);
+  color: var(--aal-color-text-default);
+}
+
+.aal-dialog--small {
+  inline-size: min(90vw, 24rem);
+}
+
+.aal-dialog--large {
+  inline-size: min(90vw, 48rem);
+}
+
+/*
+ * Note: the container takes focus (via tabindex="-1") only when nothing inside
+ * it is focusable, and it deliberately carries NO outline:none rule.
+ *
+ * Browsers do not apply :focus-visible to a programmatically-focused
+ * tabindex="-1" element, so no ring is painted anyway — and suppressing the
+ * outline outright would also suppress it in any future case where the
+ * container legitimately became interactive. Stylelint blocks the suppression
+ * for exactly that reason (AR-05).
+ */
+
+.aal-dialog__header {
+  display: flex;
+  gap: var(--aal-space-3);
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.aal-dialog__title {
+  margin: 0;
+  font-size: var(--aal-font-size-xl);
+  line-height: var(--aal-font-lineheight-tight);
+}
+
+.aal-dialog__close {
+  /* AR-09 / SC 2.5.8 — a close button is the control users most often miss. */
+  min-inline-size: var(--aal-target-comfortable);
+  min-block-size: var(--aal-target-comfortable);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: var(--aal-border-width-thin) solid transparent;
+  border-radius: var(--aal-radius-md);
+  background: transparent;
+  color: var(--aal-color-text-default);
+  font-size: var(--aal-font-size-lg);
+  cursor: pointer;
+}
+
+.aal-dialog__close:hover {
+  background: var(--aal-color-surface-raised);
+  border-color: var(--aal-color-border-default);
+}
+
+/* AR-05 — sealed tokens. */
+.aal-dialog__close:focus-visible {
+  outline: var(--aal-focus-ring-width) solid var(--aal-color-focus-outer);
+  outline-offset: var(--aal-focus-ring-offset);
+  box-shadow: 0 0 0 var(--aal-focus-ring-width) var(--aal-color-focus-inner);
+}
+
+.aal-dialog__description {
+  margin: 0;
+  color: var(--aal-color-text-muted);
+  line-height: var(--aal-font-lineheight-body);
+}
+
+.aal-dialog__body {
+  line-height: var(--aal-font-lineheight-body);
+}
+
+.aal-dialog__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--aal-space-2);
+  justify-content: flex-end;
+}
+
+/*
+ * AR-20 / SC 2.3.1. There is no entry animation to disable here — a dialog
+ * that fades in delays the moment focus becomes visible, and for a user with
+ * a vestibular condition a scaling overlay is actively unpleasant. The dialog
+ * simply appears.
+ */
+
+/* AR-19. Custom colours are discarded in forced-colors mode, so without an
+   explicit border the dialog and the page behind it become one flat surface. */
+@media (forced-colors: active) {
+  .aal-dialog {
+    border-color: CanvasText;
+    border-width: var(--aal-border-width-medium);
+  }
+
+  .aal-dialog__close:focus-visible {
+    outline-color: Highlight;
+  }
+}

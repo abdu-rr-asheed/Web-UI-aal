@@ -1,0 +1,75 @@
+/** Alert and status (SC 4.1.3). */
+
+.aal-alert {
+  display: flex;
+  gap: var(--aal-space-2);
+  align-items: flex-start;
+  padding: var(--aal-space-3);
+  border: var(--aal-border-width-thin) solid var(--aal-color-border-default);
+  border-inline-start-width: var(--aal-border-width-medium);
+  border-radius: var(--aal-radius-md);
+  background: var(--aal-color-surface-raised);
+  color: var(--aal-color-text-default);
+}
+
+/* Tone is carried by the icon, the spoken prefix AND the colour. No single
+   channel is load-bearing (AR-13 / SC 1.4.1). */
+.aal-alert--success {
+  border-inline-start-color: var(--aal-color-success-border);
+  background: var(--aal-color-success-surface);
+}
+
+.aal-alert--warning {
+  border-inline-start-color: var(--aal-color-warning-border);
+  background: var(--aal-color-warning-surface);
+}
+
+.aal-alert--error {
+  border-inline-start-color: var(--aal-color-danger-border);
+  background: var(--aal-color-danger-surface);
+}
+
+.aal-alert__icon {
+  flex-shrink: 0;
+  font-size: var(--aal-font-size-lg);
+  line-height: 1;
+}
+
+.aal-alert__content {
+  flex: 1;
+}
+
+.aal-alert__heading {
+  margin: 0 0 var(--aal-space-1);
+  font-weight: var(--aal-font-weight-bold);
+}
+
+.aal-alert__message {
+  margin: 0;
+  line-height: var(--aal-font-lineheight-body);
+}
+
+.aal-alert__dismiss {
+  /* AR-09 / SC 2.5.8 */
+  min-inline-size: var(--aal-target-min);
+  min-block-size: var(--aal-target-min);
+
+  flex-shrink: 0;
+  border: var(--aal-border-width-thin) solid transparent;
+  border-radius: var(--aal-radius-sm);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.aal-alert__dismiss:focus-visible {
+  outline: var(--aal-focus-ring-width) solid var(--aal-color-focus-outer);
+  outline-offset: var(--aal-focus-ring-offset);
+  box-shadow: 0 0 0 var(--aal-focus-ring-width) var(--aal-color-focus-inner);
+}
+
+@media (forced-colors: active) {
+  .aal-alert {
+    border-color: CanvasText;
+  }
+}

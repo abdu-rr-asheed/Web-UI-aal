@@ -1,0 +1,51 @@
+/** Disclosure (APG Disclosure). */
+
+.aal-disclosure__trigger {
+  /* AR-09 / SC 2.5.8 */
+  min-block-size: var(--aal-target-comfortable);
+
+  display: flex;
+  gap: var(--aal-space-2);
+  align-items: center;
+  inline-size: 100%;
+  padding: var(--aal-space-2);
+  border: var(--aal-border-width-thin) solid transparent;
+  border-radius: var(--aal-radius-md);
+  background: transparent;
+  color: var(--aal-color-text-default);
+  font-family: inherit;
+  font-size: var(--aal-font-size-md);
+  font-weight: var(--aal-font-weight-medium);
+  text-align: start;
+  cursor: pointer;
+}
+
+.aal-disclosure__trigger:hover:not(:disabled) {
+  background: var(--aal-color-surface-raised);
+}
+
+.aal-disclosure__trigger:focus-visible {
+  outline: var(--aal-focus-ring-width) solid var(--aal-color-focus-outer);
+  outline-offset: var(--aal-focus-ring-offset);
+  box-shadow: 0 0 0 var(--aal-focus-ring-width) var(--aal-color-focus-inner);
+}
+
+.aal-disclosure__trigger:disabled {
+  color: var(--aal-color-text-disabled);
+  cursor: not-allowed;
+}
+
+.aal-disclosure__marker {
+  flex-shrink: 0;
+}
+
+.aal-disclosure__panel {
+  padding: var(--aal-space-3) var(--aal-space-3) var(--aal-space-3) var(--aal-space-6);
+  line-height: var(--aal-font-lineheight-body);
+}
+
+@media (forced-colors: active) {
+  .aal-disclosure__trigger:focus-visible {
+    outline-color: Highlight;
+  }
+}

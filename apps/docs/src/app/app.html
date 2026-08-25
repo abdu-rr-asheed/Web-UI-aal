@@ -98,6 +98,49 @@
     </form>
   </section>
 
+  <section aria-labelledby="overlay-heading">
+    <h2 id="overlay-heading">Overlays</h2>
+    <p>
+      Open the dialog and press <kbd>Tab</kbd> — focus is trapped inside it, the page
+      behind is inert, and <kbd>Escape</kbd> returns you to the button you came from.
+    </p>
+
+    <div class="demo-row">
+      <aal-button variant="primary" (activated)="dialogOpen.set(true)">Open confirmation dialog</aal-button>
+
+      <aal-tooltip text="Saves your changes without closing the form">
+        <aal-button variant="secondary">Save draft</aal-button>
+      </aal-tooltip>
+    </div>
+
+    <aal-alert
+      heading="Changes saved"
+      message="Your delivery preferences were updated."
+      tone="success"
+    />
+
+    <aal-disclosure summary="What happens to my data?">
+      <p>
+        Your details are stored only for the duration of this order and are never shared
+        with third parties.
+      </p>
+    </aal-disclosure>
+
+    <aal-dialog
+      [(open)]="dialogOpen"
+      variant="alertdialog"
+      heading="Delete this account?"
+      description="Deleting your account removes all orders and cannot be undone."
+      (closed)="lastDialogReason.set($event)"
+    >
+      <p>You will lose access immediately.</p>
+      <div aalDialogActions>
+        <aal-button variant="secondary" (activated)="dialogOpen.set(false)">Cancel</aal-button>
+        <aal-button variant="danger" (activated)="dialogOpen.set(false)">Delete account</aal-button>
+      </div>
+    </aal-dialog>
+  </section>
+
   <router-outlet />
 </main>
 

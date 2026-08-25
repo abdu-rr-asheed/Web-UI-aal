@@ -6,11 +6,15 @@ import { AalSkipLink } from '@aal/components/skip-link';
 import { AalTextField } from '@aal/components/text-field';
 import { AalCheckbox, AalRadioGroup, AalSwitch } from '@aal/components/choice';
 import { AalNativeSelect, AalSelect } from '@aal/components/select';
+import { AalDialog } from '@aal/components/dialog';
+import { AalAlert } from '@aal/components/alert';
+import { AalDisclosure } from '@aal/components/disclosure';
+import { AalTooltip } from '@aal/components/tooltip';
 import type { AalSelectOption } from '@aal/components/select';
 import type { AalRadioOption } from '@aal/components/choice';
 
 @Component({
-  imports: [RouterOutlet, AalButton, AalLink, AalSkipLink, AalTextField, AalCheckbox, AalSwitch, AalRadioGroup, AalSelect, AalNativeSelect],
+  imports: [RouterOutlet, AalButton, AalLink, AalSkipLink, AalTextField, AalCheckbox, AalSwitch, AalRadioGroup, AalSelect, AalNativeSelect, AalDialog, AalAlert, AalDisclosure, AalTooltip],
   selector: 'aal-root',
   styleUrl: './app.scss',
   templateUrl: './app.html',
@@ -25,6 +29,9 @@ export class App {
     { value: 'express', label: 'Express delivery', hint: 'Next working day' },
     { value: 'collect', label: 'Click and collect' },
   ];
+
+  protected readonly dialogOpen = signal(false);
+  protected readonly lastDialogReason = signal('');
 
   protected readonly countryOptions: AalSelectOption[] = [
     { value: 'uk', label: 'United Kingdom' },

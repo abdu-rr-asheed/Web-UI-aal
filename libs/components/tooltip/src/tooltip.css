@@ -1,0 +1,37 @@
+/** Tooltip (SC 1.4.13). */
+
+.aal-tooltip-host {
+  position: relative;
+  display: inline-block;
+}
+
+.aal-tooltip {
+  position: absolute;
+  inset-block-start: calc(100% + var(--aal-space-1));
+  inset-inline-start: 0;
+  z-index: 50;
+
+  /* Wide enough to read, narrow enough not to cover the page. Text wraps
+     rather than forcing horizontal scroll at 320px (AR-17). */
+  inline-size: max-content;
+  max-inline-size: 16rem;
+
+  padding: var(--aal-space-2) var(--aal-space-3);
+  border: var(--aal-border-width-thin) solid var(--aal-color-border-default);
+  border-radius: var(--aal-radius-md);
+  background: var(--aal-color-surface-overlay);
+  color: var(--aal-color-text-default);
+  font-size: var(--aal-font-size-sm);
+  line-height: var(--aal-font-lineheight-body);
+}
+
+/* No transition. A tooltip that fades in delays the information for everyone
+   and is one more thing to wait through at high magnification (AR-20). */
+
+@media (forced-colors: active) {
+  .aal-tooltip {
+    border-color: CanvasText;
+    background: Canvas;
+    color: CanvasText;
+  }
+}
