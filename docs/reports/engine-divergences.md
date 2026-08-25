@@ -193,3 +193,51 @@ wherever it happened to land, this tests every element in both directions.
 moved somewhere Firefox no longer looked. Adding `keyboard-firefox` and
 `keyboard-webkit` to the matrix surfaced it. A green pipeline is only evidence
 if you know what it is running.
+
+---
+
+## D-006 — jsdom does not implement native radio-group keyboard behaviour
+
+| Field | Value |
+|---|---|
+| **Discovered** | 2026-08-25, Sprint 2, `libs/components/choice` |
+| **Environment** | jsdom (Vitest unit tests) |
+| **Severity** | Methodological — determines where a claim can be verified |
+| **Status** | RESOLVED by moving the verification, not by weakening it |
+
+**Observed.** Arrow keys in a native radio group do nothing under jsdom.
+Focus does not move and selection does not change, so unit tests asserting the
+APG Radio Group interaction rows fail.
+
+**Cause.** Roving focus and arrow-key selection within a same-`name` radio
+group are implemented by the **browser**, not by the DOM API. jsdom implements
+the DOM, not the interaction layer built on top of it.
+
+**Why this one matters more than it looks.** Relying on the platform for that
+behaviour is the *central design decision* of `AalRadioGroup` — the component
+deliberately does not use `AalRovingTabindex`, on the grounds that
+re-implementing platform behaviour assistive technology already understands is
+exactly what PRD §6.3.1 warns against. A test that cannot observe the
+behaviour cannot verify the decision.
+
+Worse, a jsdom test written to pass anyway would stay green if someone later
+replaced the native radios with hand-rolled `div`s and key handlers — the one
+regression that would actually break the design.
+
+**Resolution.** The interaction rows moved to
+`e2e/keyboard/radio-group.spec.ts`, where a real browser provides the
+behaviour. Sixteen tests now cover the full APG table: single tab stop, Down
+and Up wrapping with selection, Right and Left, and Tab returning to the
+*checked* radio rather than the first.
+
+What stays in jsdom is the **precondition**: every radio shares one name, sits
+inside one fieldset, and carries no hand-rolled `tabindex`. Those are the facts
+that make the browser behaviour apply, and they are exactly what a refactor
+would break first.
+
+**A real defect this uncovered.** Writing the E2E assertion against the
+*computed accessibility tree* rather than the markup revealed that
+`<fieldset>` maps to role `group`, not `radiogroup` — the markup looked
+correct and the tree did not say what kind of group it was. An explicit
+`role="radiogroup"` was added. This is precisely the case TR-04 exists for:
+asserting DOM attributes would have passed.

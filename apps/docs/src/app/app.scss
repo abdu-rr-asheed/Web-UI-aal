@@ -96,3 +96,8 @@ kbd {
   font-family: var(--aal-font-family-mono);
   font-size: var(--aal-font-size-sm);
 }
+
+.demo-form {
+  max-width: 32rem;
+  margin-block: var(--aal-space-5);
+}

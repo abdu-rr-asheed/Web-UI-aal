@@ -47,6 +47,43 @@
     </p>
   </section>
 
+  <section aria-labelledby="form-heading">
+    <h2 id="form-heading">Form controls</h2>
+    <p>
+      Every control below is a real AAL component. Tab through them, and try the
+      arrow keys inside the delivery options — a radio group is one tab stop.
+    </p>
+
+    <form class="demo-form" (submit)="$event.preventDefault()">
+      <aal-text-field
+        label="Full name"
+        autocomplete="name"
+        [required]="true"
+        hint="As it appears on your ID"
+      />
+
+      <aal-text-field
+        label="Email address"
+        type="email"
+        autocomplete="email"
+        [required]="true"
+        error="Enter an email address in the format name@example.com"
+      />
+
+      <aal-text-field label="Delivery notes" [multiline]="true" [maxLength]="200" [showCounter]="true" />
+
+      <aal-radio-group legend="Delivery method" [options]="deliveryOptions" [required]="true" />
+
+      <aal-checkbox hint="We send one email a month, and you can unsubscribe at any time">
+        Email me about order updates
+      </aal-checkbox>
+
+      <aal-switch>Save these details for next time</aal-switch>
+
+      <aal-button type="submit" variant="primary">Place order</aal-button>
+    </form>
+  </section>
+
   <router-outlet />
 </main>
 

@@ -1,0 +1,124 @@
+/**
+ * Text field (PRD §9.2).
+ *
+ * Tokens only. The error state is conveyed by icon, text AND colour together —
+ * never colour alone (AR-13 / SC 1.4.1), because a red border says nothing to
+ * a user with a colour-vision deficiency or one browsing in forced-colors mode.
+ */
+
+.aal-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--aal-space-1);
+  margin-block-end: var(--aal-space-4);
+}
+
+.aal-field__label {
+  font-size: var(--aal-font-size-md);
+  font-weight: var(--aal-font-weight-medium);
+  color: var(--aal-color-text-default);
+  /* AR-09 — the label is part of the control's hit area. */
+  cursor: pointer;
+}
+
+
+.aal-field__required {
+  color: var(--aal-color-danger-text);
+  margin-inline-start: var(--aal-space-1);
+}
+
+
+.aal-field__hint {
+  margin: 0;
+  font-size: var(--aal-font-size-sm);
+  color: var(--aal-color-text-muted);
+}
+
+.aal-field__control {
+  /* AR-09 / SC 2.5.8 */
+  min-block-size: var(--aal-target-comfortable);
+
+  padding: var(--aal-space-2) var(--aal-space-3);
+  border: var(--aal-border-width-thin) solid var(--aal-color-field-border);
+  border-radius: var(--aal-radius-md);
+  background: var(--aal-color-field-bg);
+  color: var(--aal-color-text-default);
+
+  font-family: inherit;
+  font-size: var(--aal-font-size-md);
+  line-height: var(--aal-font-lineheight-body);
+}
+
+.aal-field__control::placeholder {
+  color: var(--aal-color-text-placeholder);
+  /* Placeholders must stay readable: they are frequently the only format hint
+     on screen, even though they must never be the only LABEL. */
+  opacity: 1;
+}
+
+.aal-field__control:hover:not(:disabled) {
+  border-color: var(--aal-color-field-border-hover);
+}
+
+/* AR-05 — the two-tone ring, sealed tokens. */
+.aal-field__control:focus-visible {
+  outline: var(--aal-focus-ring-width) solid var(--aal-color-focus-outer);
+  outline-offset: var(--aal-focus-ring-offset);
+  box-shadow: 0 0 0 var(--aal-focus-ring-width) var(--aal-color-focus-inner);
+}
+
+.aal-field__control:disabled {
+  background: var(--aal-color-field-bg-disabled);
+  color: var(--aal-color-text-disabled);
+  cursor: not-allowed;
+}
+
+/* Invalid: thicker border AND a colour change AND the icon+text below. Three
+   independent signals, so no single perceptual channel is load-bearing. */
+.aal-field--invalid .aal-field__control {
+  border-color: var(--aal-color-field-border-invalid);
+  border-width: var(--aal-border-width-medium);
+}
+
+.aal-field__error {
+  display: flex;
+  gap: var(--aal-space-1);
+  align-items: flex-start;
+  margin: 0;
+  font-size: var(--aal-font-size-sm);
+  font-weight: var(--aal-font-weight-medium);
+  color: var(--aal-color-danger-text);
+}
+
+.aal-field__error-icon {
+  flex-shrink: 0;
+}
+
+.aal-field__counter {
+  margin: 0;
+  font-size: var(--aal-font-size-sm);
+  color: var(--aal-color-text-muted);
+}
+
+/* AR-19. Forced-colors discards custom colours, so the invalid state needs a
+   non-colour signal — the icon and the error text carry it, and the border is
+   forced visible so the control still reads as a control. */
+@media (forced-colors: active) {
+  .aal-field__control {
+    border-color: CanvasText;
+  }
+
+  .aal-field__control:focus-visible {
+    outline-color: Highlight;
+  }
+
+  .aal-field--invalid .aal-field__control {
+    border-color: CanvasText;
+    border-style: dashed;
+  }
+
+  .aal-field__control:disabled {
+    color: GrayText;
+    border-color: GrayText;
+  }
+}

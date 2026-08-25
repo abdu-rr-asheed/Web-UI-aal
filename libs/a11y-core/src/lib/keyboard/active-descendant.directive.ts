@@ -45,7 +45,7 @@ export class AalActiveDescendant {
       // The active option has no DOM focus, so the browser will not scroll it
       // into view. Without this a sighted keyboard user arrows into content
       // they cannot see.
-      el.ownerDocument?.getElementById(id)?.scrollIntoView({ block: 'nearest' });
+      el.ownerDocument?.getElementById(id)?.scrollIntoView?.({ block: 'nearest' });
     });
   }
 }

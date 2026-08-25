@@ -86,7 +86,12 @@ export class AalSkipLink {
     // Scroll too: focus() alone does not always scroll when the element is
     // only partly off-screen, and the two must agree or the sighted keyboard
     // user sees one thing while focus is somewhere else.
-    target.scrollIntoView({ block: 'start', behavior: 'instant' as ScrollBehavior });
+    //
+    // Guarded because scrollIntoView does not exist under SSR or in jsdom.
+    // Focus has already moved by this point, which is the accessibility
+    // requirement — scrolling only makes the result visible, so its absence
+    // degrades appearance rather than conformance.
+    target.scrollIntoView?.({ block: 'start', behavior: 'instant' as ScrollBehavior });
   }
 
   /**

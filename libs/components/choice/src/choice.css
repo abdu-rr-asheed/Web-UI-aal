@@ -1,0 +1,188 @@
+/**
+ * Checkbox, radio and switch (PRD §9.3).
+ *
+ * The native input is kept in the DOM and made transparent — NOT display:none,
+ * NOT visibility:hidden. Both would remove it from the accessibility tree and
+ * from the tab order, forcing a re-implementation of Space toggling, roles,
+ * states, form participation and arrow-key group navigation that the platform
+ * already provides correctly.
+ */
+
+.aal-choice {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--aal-space-2);
+  align-items: center;
+  /* AR-09 / SC 2.5.8 — the row is the target, not just the 16px box. */
+  min-block-size: var(--aal-target-comfortable);
+}
+
+/*
+ * Transparent, but present, sized and positioned over the visual indicator.
+ * It remains the thing the user actually clicks and the thing the OS draws in
+ * forced-colors mode.
+ */
+.aal-choice__input {
+  grid-area: 1 / 1;
+  inline-size: var(--aal-target-min);
+  block-size: var(--aal-target-min);
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.aal-choice__indicator {
+  grid-area: 1 / 1;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: center;
+  border: var(--aal-border-width-medium) solid var(--aal-color-field-border);
+  border-radius: var(--aal-radius-sm);
+  background: var(--aal-color-field-bg);
+}
+
+.aal-choice__indicator--radio {
+  border-radius: var(--aal-radius-full);
+}
+
+.aal-choice__input:checked + .aal-choice__indicator,
+.aal-choice__input:indeterminate + .aal-choice__indicator {
+  background: var(--aal-color-action-bg);
+  border-color: var(--aal-color-action-border);
+}
+
+/* Drawn with currentColor so forced-colors mode can repaint it (AR-19). */
+.aal-choice__tick {
+  inline-size: 0.35rem;
+  block-size: 0.65rem;
+  border-inline-end: var(--aal-border-width-medium) solid var(--aal-color-text-on-action);
+  border-block-end: var(--aal-border-width-medium) solid var(--aal-color-text-on-action);
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+
+.aal-choice__dash {
+  inline-size: 0.6rem;
+  block-size: var(--aal-border-width-medium);
+  background: var(--aal-color-text-on-action);
+}
+
+.aal-choice__dot {
+  inline-size: 0.6rem;
+  block-size: 0.6rem;
+  border-radius: var(--aal-radius-full);
+  background: var(--aal-color-text-on-action);
+}
+
+/* AR-05 — the ring is drawn on the INDICATOR because the input itself is
+   transparent; :has() keeps the relationship in CSS rather than in TypeScript. */
+.aal-choice__input:focus-visible + .aal-choice__indicator,
+.aal-choice__input:focus-visible ~ .aal-switch__track {
+  outline: var(--aal-focus-ring-width) solid var(--aal-color-focus-outer);
+  outline-offset: var(--aal-focus-ring-offset);
+  box-shadow: 0 0 0 var(--aal-focus-ring-width) var(--aal-color-focus-inner);
+}
+
+.aal-choice__label {
+  grid-column: 2;
+  cursor: pointer;
+  color: var(--aal-color-text-default);
+  line-height: var(--aal-font-lineheight-body);
+}
+
+.aal-choice--disabled .aal-choice__label,
+.aal-choice--disabled .aal-choice__input {
+  cursor: not-allowed;
+  color: var(--aal-color-text-disabled);
+}
+
+.aal-choice__hint {
+  grid-column: 2;
+  margin: 0;
+  font-size: var(--aal-font-size-sm);
+  color: var(--aal-color-text-muted);
+}
+
+
+/* Switch ------------------------------------------------------------------ */
+
+.aal-switch__track {
+  grid-area: 1 / 1;
+  inline-size: 2.5rem;
+  block-size: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem;
+  border: var(--aal-border-width-medium) solid var(--aal-color-field-border);
+  border-radius: var(--aal-radius-full);
+  background: var(--aal-color-surface-sunken);
+  transition: background-color var(--aal-motion-fast) ease;
+}
+
+.aal-choice__input:checked ~ .aal-switch__track {
+  background: var(--aal-color-action-bg);
+  border-color: var(--aal-color-action-border);
+}
+
+.aal-switch__thumb {
+  inline-size: 1rem;
+  block-size: 1rem;
+  border-radius: var(--aal-radius-full);
+  background: var(--aal-color-surface-default);
+  transition: transform var(--aal-motion-fast) ease;
+}
+
+.aal-choice__input:checked ~ .aal-switch__track .aal-switch__thumb {
+  transform: translateX(1rem);
+}
+
+.aal-choice--switch .aal-choice__input {
+  inline-size: 2.5rem;
+}
+
+/* Radio group -------------------------------------------------------------- */
+
+.aal-radio-group {
+  margin: 0 0 var(--aal-space-4);
+  padding: 0;
+  border: 0;
+}
+
+.aal-radio-group__legend {
+  padding: 0;
+  margin-block-end: var(--aal-space-2);
+  font-weight: var(--aal-font-weight-medium);
+  color: var(--aal-color-text-default);
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .aal-switch__track,
+  .aal-switch__thumb {
+    transition: none;
+  }
+}
+
+/*
+ * AR-19. The OS draws native checkboxes and radios itself in forced-colors
+ * mode, so the custom indicator is HIDDEN and the real input is made visible
+ * again. A CSS-only indicator would otherwise vanish, taking the checked state
+ * with it — the single strongest reason to keep the native input.
+ */
+@media (forced-colors: active) {
+  .aal-choice__indicator,
+  .aal-switch__track {
+    display: none;
+  }
+
+  .aal-choice__input {
+    opacity: 1;
+    inline-size: auto;
+    block-size: auto;
+    justify-self: center;
+  }
+}

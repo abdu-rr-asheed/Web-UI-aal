@@ -117,7 +117,9 @@ export class FocusObscuringGuard {
 
     // `center` rather than `nearest`: nearest frequently parks the element
     // directly under the very sticky header that was covering it.
-    el.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'instant' as ScrollBehavior });
+    //
+    // Optional-called because scrollIntoView is absent under SSR and in jsdom.
+    el.scrollIntoView?.({ block: 'center', inline: 'nearest', behavior: 'instant' as ScrollBehavior });
     return false;
   }
 }

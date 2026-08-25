@@ -10,7 +10,9 @@
     /* See libs/components/tsconfig.lib.json — same rationale. */
     "paths": {
       "@aal/tokens": ["../../dist/tokens"],
-      "@aal/a11y-core": ["../../dist/a11y-core"]
+      "@aal/a11y-core": ["../../dist/a11y-core"],
+      /* One primitive entry point importing another — see components/tsconfig.lib.json. */
+      "@aal/primitives/*": ["./*/src/public-api.ts"]
     }
   },
   "include": ["src/**/*.ts", "*/src/**/*.ts"],

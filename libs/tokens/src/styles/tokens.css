@@ -332,6 +332,33 @@
     }
   }
 
+  /**
+   * Visually hidden, still in the accessibility tree.
+   *
+   * Lives here rather than being repeated in each component's stylesheet: it
+   * was duplicated five times across text-field, choice and radio-group, and
+   * five copies of a load-bearing idiom is five chances for one of them to
+   * drift into "display: none" — which would remove the text from the
+   * accessibility tree entirely and hide it from exactly the users it is
+   * written for.
+   *
+   * The px values are deliberate and must not become rem: 1px rather than 0
+   * because some screen readers skip zero-area elements, and the -1px margin
+   * pulls the residual box out of the layout. Neither should scale with the
+   * user's font size.
+   */
+  .aal-visually-hidden {
+    position: absolute !important;
+    inline-size: 1px !important;
+    block-size: 1px !important;
+    margin: -1px !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    clip-path: inset(50%) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  }
+
   /* AR-20 — honour the user's motion preference globally, not per component. */
   @media (prefers-reduced-motion: reduce) {
     :root {

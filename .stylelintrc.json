@@ -66,7 +66,15 @@
             "max-width",
             "max-height",
             "width",
-            "height"
+            "height",
+            "inline-size",
+            "block-size",
+            "min-inline-size",
+            "min-block-size",
+            "max-inline-size",
+            "max-block-size",
+            "/^inset/",
+            "transform"
           ]
         },
         "message": "AR-18 / SC 1.4.4: px font sizes and spacing silently defeat the user's own browser text-size setting. Use rem. Exempt: hairline borders, outlines, and the 24px minimum target size, which must NOT scale down with the root font (AR-09)."
