@@ -121,8 +121,17 @@ test.describe('Escape closes and restores focus (failure mode 3)', () => {
   });
 
   test('returns focus to the trigger, never to body', async ({ page }) => {
+    // Opened by KEYBOARD, not by click. WebKit does not focus a button on click
+    // (D-008), so a click-driven version asserts the engine's pointer behaviour
+    // rather than AAL's focus restoration: there would be nothing on the
+    // trigger to restore TO. Keyboard activation is also the case that matters
+    // — a pointer user who loses focus does not notice, and a keyboard user is
+    // stranded at the top of the document.
     const trigger = page.getByRole('button', { name: 'Open confirmation dialog' });
-    await openDialog(page);
+    await trigger.focus();
+    await page.keyboard.press('Enter');
+    await expect(page.getByRole('alertdialog')).toBeVisible();
+
     await page.keyboard.press('Escape');
 
     await expect(trigger).toBeFocused();

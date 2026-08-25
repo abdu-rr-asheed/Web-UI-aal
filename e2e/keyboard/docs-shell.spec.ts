@@ -52,6 +52,22 @@ test.describe('docs site — keyboard (AR-02, SC 2.4.1)', () => {
   });
 
   test('has no keyboard trap: focus can always leave (SC 2.1.2)', async ({ page }) => {
+    // The cost of this sweep is O(number of focusables on the page), with four
+    // round trips to the browser each, and the docs shell grows every sprint as
+    // more components are dogfooded into it. Sprint 4 roughly doubled the count
+    // and pushed the WebKit run past the default 30s.
+    //
+    // An explicit generous budget rather than sampling the elements: a keyboard
+    // trap on the one control that was not checked is exactly the defect this
+    // exists to find, so coverage is the thing that must not be traded away.
+    //
+    // 30s in isolation on WebKit; test.slow()'s 90s was still not enough with
+    // six workers competing for the machine. The runtime is dominated by
+    // per-element browser round trips, not by anything that could hang, and
+    // retries are off — so a slow pass here is a slow pass, never a flake being
+    // absorbed.
+    test.setTimeout(240_000);
+
     await page.goto('/');
 
     /**
@@ -69,10 +85,21 @@ test.describe('docs site — keyboard (AR-02, SC 2.4.1)', () => {
      * checks every focusable element rather than wherever a Tab walk happened
      * to land.
      */
-    // Disabled controls are excluded deliberately: a disabled element is
-    // CORRECTLY not focusable, so asserting that focus can leave it would be
-    // asserting a bug. The docs shell now renders a real disabled AAL button,
-    // which is what surfaced this.
+    /**
+     * Two exclusions, both because the element is CORRECTLY not focusable, so
+     * asserting that focus can leave it would be asserting a bug:
+     *
+     *   - **Disabled controls.** The docs shell renders a real disabled AAL
+     *     button, which is what surfaced this.
+     *   - **Elements not rendered at this viewport.** `:visible` is applied
+     *     because a CSS selector cannot see `display: none`. AalNav's
+     *     collapsed-viewport toggle is a `<button>` in the markup at every
+     *     width and focusable at none above the breakpoint — which is the
+     *     point of it, and this test found it the day it was added.
+     *
+     * SC 2.1.2 is about components that CAN receive focus, so narrowing the
+     * sweep this way tests the criterion rather than something adjacent to it.
+     */
     const focusables = await page
       .locator(
         [
@@ -82,7 +109,9 @@ test.describe('docs site — keyboard (AR-02, SC 2.4.1)', () => {
           'select:not([disabled])',
           'textarea:not([disabled])',
           '[tabindex]:not([tabindex="-1"])',
-        ].join(', '),
+        ]
+          .map((sel) => `${sel}:visible`)
+          .join(', '),
       )
       .all();
     expect(focusables.length, 'shell has no focusable elements to test').toBeGreaterThan(0);

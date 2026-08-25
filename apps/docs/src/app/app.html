@@ -10,13 +10,13 @@
 <aal-skip-link targetId="main" />
 
 <header class="app-header">
-  <nav aria-label="Primary">
-    <ul>
-      <li><aal-link href="/" current="page" [underline]="false">Home</aal-link></li>
-      <li><aal-link href="/components" [underline]="false">Components</aal-link></li>
-      <li><aal-link href="/reports" [underline]="false">Audit reports</aal-link></li>
-    </ul>
-  </nav>
+  <!--
+    The real <aal-nav>, not hand-written markup that resembles it. Uses the
+    Disclosure Navigation Menu pattern: no role="menu" anywhere, so every
+    destination stays a link and a screen reader stays in browse mode
+    (ADR-0005).
+  -->
+  <aal-nav label="Primary" [items]="navItems" />
 </header>
 
 <main id="main" tabindex="-1">
@@ -139,6 +139,39 @@
         <aal-button variant="danger" (activated)="dialogOpen.set(false)">Delete account</aal-button>
       </div>
     </aal-dialog>
+  </section>
+
+  <section aria-labelledby="nav-heading">
+    <h2 id="nav-heading">Navigation</h2>
+    <p>
+      Open the <strong>Components</strong> submenu in the header and press
+      <kbd>Escape</kbd> — it closes and focus returns to the trigger you opened it from.
+      Below the tab list, <kbd>←</kbd> and <kbd>→</kbd> move focus without switching
+      panel; <kbd>Enter</kbd> commits. That is manual activation (ADR-0008).
+    </p>
+
+    <aal-breadcrumb [items]="crumbs" />
+
+    <aal-tabs label="Navigation patterns">
+      <aal-tab label="Disclosure nav">
+        <p>
+          Site navigation is a list of links, so it keeps native list and link semantics.
+          Marking it up as <code>role="menu"</code> would switch a screen reader into
+          application mode and remove the site's own navigation from "list all links".
+        </p>
+      </aal-tab>
+      <aal-tab label="Menu button">
+        <p>A menu of actions, where <code>role="menu"</code> genuinely is correct:</p>
+        <aal-menu label="Row actions" [items]="rowActions" (selected)="lastAction.set($event)" />
+        @if (lastAction()) {
+          <p>Last action chosen: {{ lastAction() }}</p>
+        }
+      </aal-tab>
+      <aal-tab label="Pagination">
+        <p>Changing page is announced politely, and focus stays on the control you pressed.</p>
+        <aal-pagination [totalPages]="12" [(page)]="resultsPage" />
+      </aal-tab>
+    </aal-tabs>
   </section>
 
   <router-outlet />

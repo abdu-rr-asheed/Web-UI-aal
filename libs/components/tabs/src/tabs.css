@@ -1,0 +1,126 @@
+/** Tabs (APG Tabs, PRD §9.7). */
+
+.aal-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--aal-space-3);
+}
+
+.aal-tabs--vertical {
+  flex-direction: row;
+}
+
+.aal-tabs__list {
+  display: flex;
+  /*
+    Wrap, never scroll (AR-17 / SC 1.4.10). A horizontal scroller is operable
+    with a pointer and with nothing else: the overflowed tabs stay reachable by
+    arrow key, but a sighted keyboard user cannot see where focus has gone.
+  */
+  flex-wrap: wrap;
+  gap: var(--aal-space-1);
+  border-block-end: var(--aal-border-width-thin) solid var(--aal-color-border-default);
+}
+
+.aal-tabs--vertical .aal-tabs__list {
+  flex-flow: column nowrap;
+  border-block-end: 0;
+  border-inline-end: var(--aal-border-width-thin) solid var(--aal-color-border-default);
+}
+
+.aal-tabs__tab {
+  /* AR-09 / SC 2.5.8 */
+  min-block-size: var(--aal-target-comfortable);
+  min-inline-size: var(--aal-target-min);
+
+  display: inline-flex;
+  gap: var(--aal-space-1);
+  align-items: center;
+  padding: var(--aal-space-2) var(--aal-space-3);
+  border: var(--aal-border-width-thin) solid transparent;
+  border-radius: var(--aal-radius-md) var(--aal-radius-md) 0 0;
+  background: transparent;
+  color: var(--aal-color-text-muted);
+  font-family: inherit;
+  font-size: var(--aal-font-size-md);
+  font-weight: var(--aal-font-weight-medium);
+  line-height: var(--aal-font-line-height-body);
+  cursor: pointer;
+}
+
+.aal-tabs__tab:hover:not([aria-disabled='true']) {
+  background: var(--aal-color-surface-raised);
+  color: var(--aal-color-text-default);
+}
+
+/*
+  The selected tab is distinguished by a 3px inset bar AND by weight and
+  colour, never by colour alone (AR-13 / SC 1.4.1). aria-selected carries it
+  for assistive technology; this carries it for everyone else.
+*/
+.aal-tabs__tab--selected {
+  box-shadow: inset 0 calc(-1 * var(--aal-border-width-medium)) 0 0 var(--aal-color-selected-border);
+  color: var(--aal-color-selected-text);
+  font-weight: var(--aal-font-weight-bold);
+}
+
+.aal-tabs--vertical .aal-tabs__tab {
+  border-radius: var(--aal-radius-md) 0 0 var(--aal-radius-md);
+  text-align: start;
+}
+
+.aal-tabs--vertical .aal-tabs__tab--selected {
+  box-shadow: inset calc(-1 * var(--aal-border-width-medium)) 0 0 0 var(--aal-color-selected-border);
+}
+
+.aal-tabs__tab:focus-visible {
+  outline: var(--aal-focus-ring-width) solid var(--aal-color-focus-outer);
+  outline-offset: var(--aal-focus-ring-offset);
+  box-shadow: 0 0 0 var(--aal-focus-ring-width) var(--aal-color-focus-inner);
+}
+
+.aal-tabs__tab[aria-disabled='true'] {
+  color: var(--aal-color-text-disabled);
+  cursor: not-allowed;
+}
+
+.aal-tabs__close {
+  flex-shrink: 0;
+  color: var(--aal-color-text-muted);
+}
+
+.aal-tabs__panel {
+  padding: var(--aal-space-3) 0;
+  line-height: var(--aal-font-line-height-body);
+}
+
+/*
+  `hidden` is a presentation hint that any `display` declaration overrides.
+  A panel styled `display: flex` would stay visible while reporting itself
+  hidden to assistive technology — the accessibility tree and the screen would
+  disagree, which is worse than either failure alone.
+*/
+.aal-tabs__panel[hidden] {
+  display: none;
+}
+
+.aal-tabs__panel:focus-visible {
+  outline: var(--aal-focus-ring-width) solid var(--aal-color-focus-outer);
+  outline-offset: var(--aal-focus-ring-offset);
+}
+
+@media (forced-colors: active) {
+  .aal-tabs__tab:focus-visible,
+  .aal-tabs__panel:focus-visible {
+    outline-color: Highlight;
+  }
+
+  /*
+    box-shadow is not rendered in forced-colors mode, so the selected tab
+    would lose its only non-textual indicator. A real border replaces it.
+  */
+  .aal-tabs__tab--selected {
+    border-block-end-color: Highlight;
+    border-block-end-width: var(--aal-border-width-medium);
+  }
+}

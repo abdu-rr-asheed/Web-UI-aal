@@ -165,10 +165,13 @@
   }
 
   /* Custom colours are discarded here, so the active option needs a system
-     colour or the user loses track of where they are in the list. */
+     colour or the user loses track of where they are in the list.
+
+     No `forced-color-adjust: none` — see the note in button.css. The Highlight
+     pair below is honoured without it, and the opt-out would have let author
+     colours from outside this block back in. */
   .aal-select__option--active {
     background: Highlight;
     color: HighlightText;
-    forced-color-adjust: none;
   }
 }

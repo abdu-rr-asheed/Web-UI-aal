@@ -63,7 +63,7 @@
 .aal-dialog__title {
   margin: 0;
   font-size: var(--aal-font-size-xl);
-  line-height: var(--aal-font-lineheight-tight);
+  line-height: var(--aal-font-line-height-tight);
 }
 
 .aal-dialog__close {
@@ -98,11 +98,11 @@
 .aal-dialog__description {
   margin: 0;
   color: var(--aal-color-text-muted);
-  line-height: var(--aal-font-lineheight-body);
+  line-height: var(--aal-font-line-height-body);
 }
 
 .aal-dialog__body {
-  line-height: var(--aal-font-lineheight-body);
+  line-height: var(--aal-font-line-height-body);
 }
 
 .aal-dialog__actions {

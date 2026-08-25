@@ -41,7 +41,7 @@
 
 .aal-disclosure__panel {
   padding: var(--aal-space-3) var(--aal-space-3) var(--aal-space-3) var(--aal-space-6);
-  line-height: var(--aal-font-lineheight-body);
+  line-height: var(--aal-font-line-height-body);
 }
 
 @media (forced-colors: active) {

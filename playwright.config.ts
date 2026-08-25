@@ -48,19 +48,27 @@ export default defineConfig({
 
   projects: [
     // --- Accessibility sweeps (axe in a real engine) ---
+    // The reflow suite is excluded here: it lives under a11y/ but asserts a
+    // 320px layout, so at desktop width it would fail its own viewport guard.
+    // That guard is deliberate — a reflow suite that silently ran at 1280px
+    // would report success while testing nothing, which is exactly how the
+    // reflow-320 project sat empty for four sprints without anyone noticing.
     {
       name: 'a11y-chromium',
       testMatch: /a11y\/.*\.spec\.ts/,
+      testIgnore: /reflow/,
       use: { ...devices['Desktop Chrome'] },
     },
     {
       name: 'a11y-firefox',
       testMatch: /a11y\/.*\.spec\.ts/,
+      testIgnore: /reflow/,
       use: { ...devices['Desktop Firefox'] },
     },
     {
       name: 'a11y-webkit',
       testMatch: /a11y\/.*\.spec\.ts/,
+      testIgnore: /reflow/,
       use: { ...devices['Desktop Safari'] },
     },
 
@@ -86,6 +94,15 @@ export default defineConfig({
 
     // --- forced-colors and RTL (PRD AR-19, FR-13, TR-10) ---
     // forced-colors emulation is Chromium-only in Playwright.
+    //
+    // The option below does NOT reach the default `page` fixture in Playwright
+    // 1.62 — see D-007 in docs/reports/engine-divergences.md. It is kept
+    // because it correctly scopes the project and documents intent, but the
+    // suite calls page.emulateMedia({ forcedColors: 'active' }) itself and
+    // asserts that the mode is on before asserting anything about it. Without
+    // that guard the suite would have passed while rendering normally, because
+    // every `@media (forced-colors: active)` block is simply inert outside the
+    // mode — there is nothing for an assertion to trip over.
     {
       name: 'forced-colors',
       testMatch: /forced-colors\/.*\.spec\.ts/,

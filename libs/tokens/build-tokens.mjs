@@ -45,7 +45,22 @@ const SEALED = ['focus', 'target'];
  */
 const glob = (p) => p.replaceAll('\\', '/');
 
-const cssVar = (path) => `--aal-${path.join('-')}`;
+/**
+ * Token path -> CSS custom property name.
+ *
+ * Each segment is kebab-cased. CSS custom property names are CASE-SENSITIVE,
+ * so emitting the DTCG key `lineHeight` verbatim produced
+ * `--aal-font-lineHeight-body` while every stylesheet in the library wrote
+ * `--aal-font-line-height-body`. The names never matched, so every one of those
+ * `line-height` declarations was invalid and silently dropped — meaning the
+ * 1.5 line height that AR-18 / SC 1.4.12 depends on was never actually
+ * applied. Lower-casing here makes the emitted name the one a human would
+ * guess, and tools/lint-gate/token-resolution.spec.mjs now fails the build if
+ * a stylesheet references a token that does not exist.
+ */
+const kebab = (segment) => segment.replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+
+const cssVar = (path) => `--aal-${path.map(kebab).join('-')}`;
 
 const cssValue = (token) => {
   const v = token.$value ?? token.value;
@@ -269,7 +284,7 @@ function buildScss(resolved) {
 // inlining values, so runtime theme switching keeps working — inlining the hex
 // would freeze components to the light theme.
 
-${all.map((e) => `$${e.path.join('-')}: var(${cssVar(e.path)});`).join('\n')}
+${all.map((e) => `$${e.path.map(kebab).join('-')}: var(${cssVar(e.path)});`).join('\n')}
 `;
 }
 

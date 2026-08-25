@@ -1,0 +1,157 @@
+/**
+ * Site navigation (APG Disclosure Navigation Menu, PRD §9.6).
+ *
+ * The breakpoint is a literal rather than a token because CSS custom
+ * properties cannot be used in a media query condition. 48em, not px, so the
+ * collapse follows the user's font size: someone browsing at 200% zoom
+ * (SC 1.4.4) gets the collapsed layout at a wider viewport, which is the
+ * behaviour they need rather than an accident.
+ */
+
+.aal-nav__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--aal-space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.aal-nav__item {
+  position: relative;
+}
+
+.aal-nav__link,
+.aal-nav__trigger {
+  /* AR-09 / SC 2.5.8 */
+  min-block-size: var(--aal-target-comfortable);
+  min-inline-size: var(--aal-target-min);
+
+  display: inline-flex;
+  gap: var(--aal-space-1);
+  align-items: center;
+  padding: var(--aal-space-2) var(--aal-space-3);
+  border: var(--aal-border-width-thin) solid transparent;
+  border-radius: var(--aal-radius-md);
+  background: transparent;
+  color: var(--aal-color-text-default);
+  font-family: inherit;
+  font-size: var(--aal-font-size-md);
+  line-height: var(--aal-font-line-height-body);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.aal-nav__link:hover,
+.aal-nav__trigger:hover {
+  background: var(--aal-color-surface-raised);
+  text-decoration: underline;
+}
+
+/*
+  The current page is marked with a bar and a weight change as well as colour
+  (AR-13 / SC 1.4.1). aria-current carries it for assistive technology.
+*/
+.aal-nav__link[aria-current='page'] {
+  box-shadow: inset 0 calc(-1 * var(--aal-border-width-medium)) 0 0 var(--aal-color-selected-border);
+  color: var(--aal-color-selected-text);
+  font-weight: var(--aal-font-weight-bold);
+}
+
+.aal-nav__link:focus-visible,
+.aal-nav__trigger:focus-visible,
+.aal-nav__toggle:focus-visible {
+  outline: var(--aal-focus-ring-width) solid var(--aal-color-focus-outer);
+  outline-offset: var(--aal-focus-ring-offset);
+  box-shadow: 0 0 0 var(--aal-focus-ring-width) var(--aal-color-focus-inner);
+}
+
+.aal-nav__submenu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--aal-space-1);
+  margin: 0;
+  padding: var(--aal-space-2);
+  border: var(--aal-border-width-thin) solid var(--aal-color-border-default);
+  border-radius: var(--aal-radius-md);
+  background: var(--aal-color-surface-overlay);
+  list-style: none;
+}
+
+/*
+  The toggle exists only below the breakpoint. display:none removes it from
+  the accessibility tree as well as the screen, so its aria-expanded is never
+  announced at a viewport where the list is always visible and the attribute
+  would describe nothing.
+*/
+.aal-nav__toggle {
+  display: none;
+}
+
+@media (width >= 48em) {
+  /*
+    Above the breakpoint the submenu floats over the page rather than pushing
+    the layout, so opening one does not move the links either side of it out
+    from under the user's pointer or reading position.
+  */
+  .aal-nav__submenu {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: 100%;
+    inset-inline-start: 0;
+    min-inline-size: 12rem;
+  }
+}
+
+@media (width < 48em) {
+  .aal-nav__toggle {
+    /* AR-09 / SC 2.5.8 */
+    min-block-size: var(--aal-target-comfortable);
+
+    display: inline-flex;
+    gap: var(--aal-space-2);
+    align-items: center;
+    padding: var(--aal-space-2) var(--aal-space-3);
+    border: var(--aal-border-width-thin) solid var(--aal-color-border-default);
+    border-radius: var(--aal-radius-md);
+    background: var(--aal-color-surface-default);
+    color: var(--aal-color-text-default);
+    font-family: inherit;
+    font-size: var(--aal-font-size-md);
+    cursor: pointer;
+  }
+
+  /*
+    display:none, not visibility or clipping. A collapsed panel must be gone
+    from the accessibility tree, or a screen-reader user reads navigation the
+    toggle reports as closed.
+  */
+  .aal-nav__list {
+    display: none;
+  }
+
+  .aal-nav__list--open {
+    display: flex;
+    flex-direction: column;
+    margin-block-start: var(--aal-space-2);
+  }
+
+  .aal-nav__submenu {
+    margin-inline-start: var(--aal-space-4);
+  }
+}
+
+@media (forced-colors: active) {
+  .aal-nav__link:focus-visible,
+  .aal-nav__trigger:focus-visible,
+  .aal-nav__toggle:focus-visible {
+    outline-color: Highlight;
+  }
+
+  /* box-shadow is dropped in forced-colors mode; the current page needs a
+     real border to stay distinguishable. */
+  .aal-nav__link[aria-current='page'] {
+    border-block-end-color: Highlight;
+    border-block-end-width: var(--aal-border-width-medium);
+  }
+}

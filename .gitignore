@@ -50,3 +50,7 @@ Thumbs.db
 # Research: never commit identifiable participant data (PRD §8.4, §13.6)
 /research/data/*
 !/research/data/README.md
+
+# Stale emitted JS beside the TypeScript sources it came from.
+# Committed by accident during the Session A scaffold; nothing builds from it.
+apps/**/src/**/*.js

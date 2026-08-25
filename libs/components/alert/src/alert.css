@@ -46,7 +46,7 @@
 
 .aal-alert__message {
   margin: 0;
-  line-height: var(--aal-font-lineheight-body);
+  line-height: var(--aal-font-line-height-body);
 }
 
 .aal-alert__dismiss {

@@ -1,0 +1,95 @@
+/** Pagination (PRD §9.9). */
+
+.aal-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--aal-space-2);
+  align-items: center;
+}
+
+.aal-pagination__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--aal-space-1);
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.aal-pagination__step,
+.aal-pagination__page {
+  /* AR-09 / SC 2.5.8 — page numbers are small targets by nature, so the
+     minimum is enforced on the control rather than left to the glyph. */
+  min-block-size: var(--aal-target-comfortable);
+  min-inline-size: var(--aal-target-comfortable);
+
+  display: inline-flex;
+  gap: var(--aal-space-1);
+  align-items: center;
+  justify-content: center;
+  padding: var(--aal-space-2);
+  border: var(--aal-border-width-thin) solid var(--aal-color-border-default);
+  border-radius: var(--aal-radius-md);
+  background: var(--aal-color-surface-default);
+  color: var(--aal-color-text-default);
+  font-family: inherit;
+  font-size: var(--aal-font-size-md);
+  line-height: var(--aal-font-line-height-body);
+  cursor: pointer;
+}
+
+.aal-pagination__step:hover:not([aria-disabled='true']),
+.aal-pagination__page:hover:not([aria-current='page']) {
+  background: var(--aal-color-surface-raised);
+}
+
+/*
+  The control stays focusable while unavailable (see the component's comment on
+  aria-disabled), so it must still LOOK unavailable — and the cursor has to say
+  so too, or a pointer user learns nothing until they click.
+*/
+.aal-pagination__step[aria-disabled='true'] {
+  border-color: var(--aal-color-border-subtle);
+  color: var(--aal-color-text-disabled);
+  cursor: not-allowed;
+}
+
+/*
+  The current page is distinguished by border weight and font weight as well
+  as colour (AR-13 / SC 1.4.1); aria-current carries it for assistive
+  technology.
+*/
+.aal-pagination__page--current {
+  border-color: var(--aal-color-selected-border);
+  border-width: var(--aal-border-width-medium);
+  background: var(--aal-color-selected-bg);
+  color: var(--aal-color-selected-text);
+  font-weight: var(--aal-font-weight-bold);
+}
+
+.aal-pagination__step:focus-visible,
+.aal-pagination__page:focus-visible {
+  outline: var(--aal-focus-ring-width) solid var(--aal-color-focus-outer);
+  outline-offset: var(--aal-focus-ring-offset);
+  box-shadow: 0 0 0 var(--aal-focus-ring-width) var(--aal-color-focus-inner);
+}
+
+.aal-pagination__gap {
+  display: inline-flex;
+  align-items: center;
+  min-inline-size: var(--aal-target-min);
+  justify-content: center;
+  color: var(--aal-color-text-muted);
+}
+
+@media (forced-colors: active) {
+  .aal-pagination__step:focus-visible,
+  .aal-pagination__page:focus-visible {
+    outline-color: Highlight;
+  }
+
+  .aal-pagination__page--current {
+    border-color: Highlight;
+  }
+}

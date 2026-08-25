@@ -2,11 +2,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   booleanAttribute,
+  effect,
   inject,
   input,
   model,
 } from '@angular/core';
-import { AriaIdService } from '@aal/a11y-core';
+import { AalDisclosureState } from '@aal/primitives/disclosure';
 
 /**
  * Disclosure (PRD §9.9, APG Disclosure).
@@ -33,11 +34,20 @@ import { AriaIdService } from '@aal/a11y-core';
  *
  * Content is projected rather than passed as a string, so the panel can hold
  * anything — which is the usual reason to reach for a disclosure at all.
+ *
+ * ## Where the state lives
+ *
+ * The expanded/collapsed state and the trigger-to-panel id relationship come
+ * from `AalDisclosureState` in L3, not from here. This component is markup and
+ * styling over it. That matters for the library's central claim: if L4 kept
+ * its own `aria-expanded`, the attribute would originate in two places and
+ * "exactly one origin per ARIA attribute" would stop being checkable.
  */
 @Component({
   selector: 'aal-disclosure',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [AalDisclosureState],
   styleUrl: './disclosure.css',
   template: `
     <div class="aal-disclosure">
@@ -48,18 +58,18 @@ import { AriaIdService } from '@aal/a11y-core';
       <button
         type="button"
         class="aal-disclosure__trigger"
-        [attr.id]="triggerId"
-        [attr.aria-expanded]="expanded()"
-        [attr.aria-controls]="panelId"
+        [attr.id]="state.triggerId"
+        [attr.aria-expanded]="state.expanded()"
+        [attr.aria-controls]="state.panelId"
         [disabled]="disabled()"
         (click)="toggle()"
       >
         <!-- Decorative: aria-expanded already conveys the state. -->
-        <span class="aal-disclosure__marker" aria-hidden="true">{{ expanded() ? '▾' : '▸' }}</span>
+        <span class="aal-disclosure__marker" aria-hidden="true">{{ state.expanded() ? '▾' : '▸' }}</span>
         {{ summary() }}
       </button>
 
-      @if (expanded()) {
+      @if (state.expanded()) {
         <!--
           Removed from the DOM when collapsed, not merely hidden with CSS.
           visibility:hidden and height:0 both leave the content in the
@@ -69,8 +79,8 @@ import { AriaIdService } from '@aal/a11y-core';
         <div
           class="aal-disclosure__panel"
           role="region"
-          [attr.id]="panelId"
-          [attr.aria-labelledby]="triggerId"
+          [attr.id]="state.panelId"
+          [attr.aria-labelledby]="state.triggerId"
         >
           <ng-content />
         </div>
@@ -79,10 +89,7 @@ import { AriaIdService } from '@aal/a11y-core';
   `,
 })
 export class AalDisclosure {
-  private readonly ids = inject(AriaIdService);
-
-  readonly triggerId = this.ids.next('aal-disclosure-trigger');
-  readonly panelId = this.ids.next('aal-disclosure-panel');
+  protected readonly state = inject(AalDisclosureState);
 
   /** Trigger label. Becomes the button's accessible name. */
   readonly summary = input.required<string>();
@@ -90,8 +97,19 @@ export class AalDisclosure {
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly expanded = model(false);
 
+  constructor() {
+    effect(() => this.state.setDisabled(this.disabled()));
+    effect(() => this.state.setExpanded(this.expanded()));
+
+    // The primitive refuses to change while disabled, so the model has to
+    // follow what actually happened rather than what was requested.
+    effect(() => {
+      const actual = this.state.expanded();
+      if (actual !== this.expanded()) this.expanded.set(actual);
+    });
+  }
+
   protected toggle(): void {
-    if (this.disabled()) return;
-    this.expanded.update((v) => !v);
+    this.expanded.set(this.state.toggle());
   }
 }

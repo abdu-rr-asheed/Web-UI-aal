@@ -91,7 +91,7 @@
   grid-column: 2;
   cursor: pointer;
   color: var(--aal-color-text-default);
-  line-height: var(--aal-font-lineheight-body);
+  line-height: var(--aal-font-line-height-body);
 }
 
 .aal-choice--disabled .aal-choice__label,

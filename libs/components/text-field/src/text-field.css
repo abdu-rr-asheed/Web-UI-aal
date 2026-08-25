@@ -46,7 +46,7 @@
 
   font-family: inherit;
   font-size: var(--aal-font-size-md);
-  line-height: var(--aal-font-lineheight-body);
+  line-height: var(--aal-font-line-height-body);
 }
 
 .aal-field__control::placeholder {

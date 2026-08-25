@@ -213,6 +213,46 @@ describe('AalRovingTabindex', () => {
     });
   });
 
+  describe('the single tab stop survives re-rendering', () => {
+    it('is NOT undone by a subsequent change detection pass', async () => {
+      /**
+       * AalRovingItem sets its `tabindex="-1"` default through a host binding,
+       * while syncTabindex() writes the active item's `0` imperatively. Those
+       * are two writers of one attribute, so the obvious worry is that the
+       * next change detection pass re-applies the binding and drags the
+       * composite back to ZERO tab stops — a widget a keyboard user cannot
+       * enter at all.
+       *
+       * It does not, because Angular writes a host binding whose value never
+       * changes exactly once, at element creation. This test exists to keep
+       * that true: it is an assumption about framework internals that the
+       * directive depends on and cannot state in its own code.
+       */
+      const { fixture } = await setup();
+
+      fixture.detectChanges();
+      fixture.detectChanges();
+
+      const stops = ['Bold', 'Italic', 'Underline'].filter(
+        (name) => item(name).getAttribute('tabindex') === '0',
+      );
+      expect(stops, 'the roving tab stop was clobbered by a re-render').toEqual(['Bold']);
+    });
+
+    it('survives the item set changing', async () => {
+      const { fixture, directive } = await setup();
+      fixture.componentInstance.items.set(['Bold', 'Italic', 'Underline', 'Strike']);
+      fixture.detectChanges();
+      directive.syncTabindex();
+      fixture.detectChanges();
+
+      const stops = ['Bold', 'Italic', 'Underline', 'Strike'].filter(
+        (name) => item(name).getAttribute('tabindex') === '0',
+      );
+      expect(stops).toHaveLength(1);
+    });
+  });
+
   describe('focus arriving by click', () => {
     it('resyncs the active index, so the next arrow press does not jump from a stale position', async () => {
       const { user } = await setup();

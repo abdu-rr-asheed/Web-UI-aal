@@ -1,0 +1,59 @@
+/** Breadcrumb (APG Breadcrumb, PRD §9.9). */
+
+.aal-breadcrumb__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.aal-breadcrumb__item {
+  display: flex;
+  align-items: center;
+}
+
+/*
+  The separator is a CSS pseudo-element, so it is decorative by construction:
+  it cannot reach the accessibility tree, cannot be selected, and cannot be
+  copied into the clipboard along with the trail. Putting "/" in the markup
+  makes a screen reader announce "slash" between every crumb.
+*/
+.aal-breadcrumb__item + .aal-breadcrumb__item::before {
+  padding: 0 var(--aal-space-2);
+  color: var(--aal-color-text-muted);
+  content: '/';
+}
+
+.aal-breadcrumb__link,
+.aal-breadcrumb__current {
+  /* AR-09 / SC 2.5.8 — the trail is a common target for an imprecise tap. */
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--aal-target-min);
+  font-size: var(--aal-font-size-sm);
+  line-height: var(--aal-font-line-height-body);
+}
+
+.aal-breadcrumb__link {
+  color: var(--aal-color-text-link);
+  text-decoration: underline;
+}
+
+.aal-breadcrumb__link:focus-visible {
+  outline: var(--aal-focus-ring-width) solid var(--aal-color-focus-outer);
+  outline-offset: var(--aal-focus-ring-offset);
+  box-shadow: 0 0 0 var(--aal-focus-ring-width) var(--aal-color-focus-inner);
+}
+
+.aal-breadcrumb__current {
+  color: var(--aal-color-text-default);
+  font-weight: var(--aal-font-weight-medium);
+}
+
+@media (forced-colors: active) {
+  .aal-breadcrumb__link:focus-visible {
+    outline-color: Highlight;
+  }
+}

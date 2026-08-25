@@ -39,28 +39,13 @@
   padding: var(--aal-space-3) var(--aal-space-4);
 }
 
-.app-header nav ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--aal-space-4);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.app-header a {
-  display: inline-block;
-  /* AR-09 / SC 2.5.8 — the hit area, not just the glyph, must clear 24px. */
-  min-height: var(--aal-target-min);
-  padding: var(--aal-space-1) 0;
-  color: var(--aal-color-text-link);
-}
-
-.app-header a[aria-current='page'] {
-  /* Not colour alone (AR-13): current page carries an underline as well. */
-  text-decoration-thickness: var(--aal-border-width-medium);
-  text-underline-offset: var(--aal-space-1);
-}
+/*
+  The header's navigation is <aal-nav> now, which brings its own layout, target
+  sizes and aria-current treatment. The rules that used to live here styled
+  hand-written markup; leaving them would be dead CSS that reads as though the
+  app still overrides the component, and view encapsulation means they could
+  not reach into it anyway.
+*/
 
 main {
   max-width: 70rem;

@@ -25,7 +25,7 @@
   /* rem so browser text-size settings and 200% zoom work (AR-18). */
   font-size: var(--aal-font-size-md);
   font-weight: var(--aal-font-weight-medium);
-  line-height: var(--aal-font-lineheight-body);
+  line-height: var(--aal-font-line-height-body);
 
   cursor: pointer;
   transition:
@@ -150,11 +150,18 @@
 
 /* AR-19 / forced-colors. Custom colours are discarded by the OS here, so the
    boundary must be forced visible or the button becomes an unmarked patch of
-   text. Buttons distinguished only by background colour disappear entirely. */
+   text. Buttons distinguished only by background colour disappear entirely.
+
+   No `forced-color-adjust: none`. It was here, and it was a defect: the
+   property is INHERITED and means "do not force colours in this subtree", so
+   it re-admitted every author colour declared OUTSIDE this block — including
+   `.aal-button:hover`'s background — into the one mode whose entire purpose is
+   to replace them with the user's palette. System colour keywords need no
+   opt-out to be honoured; they are the mechanism, not an exception to it.
+   Found by e2e/forced-colors/navigation.spec.ts. */
 @media (forced-colors: active) {
   .aal-button {
     border-color: ButtonText;
-    forced-color-adjust: none;
     background: ButtonFace;
     color: ButtonText;
   }

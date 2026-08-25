@@ -136,7 +136,21 @@ jobs:
     strategy:
       fail-fast: false # one engine's failure must not hide another's
       matrix:
-        project: [a11y-chromium, a11y-firefox, a11y-webkit, keyboard, keyboard-firefox, keyboard-webkit]
+        # forced-colors and reflow-320 are Chromium-only (Playwright emulates
+        # forced colours nowhere else) and were absent from this matrix until
+        # Sprint 4 — so AR-19 and AR-17 were claimed in the Definition of Done
+        # while nothing ran them anywhere. See D-007.
+        project:
+          [
+            a11y-chromium,
+            a11y-firefox,
+            a11y-webkit,
+            keyboard,
+            keyboard-firefox,
+            keyboard-webkit,
+            forced-colors,
+            reflow-320,
+          ]
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5

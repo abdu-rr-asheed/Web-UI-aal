@@ -67,11 +67,37 @@ test.describe('Down Arrow — moves focus to and SELECTS the next radio', () => 
     await expect(all.nth(1)).toBeChecked();
   });
 
-  test('wraps from the last radio to the first', async ({ page }) => {
+  test('wraps from the last radio to the first — where the engine wraps', async ({ page, browserName }) => {
+    /**
+     * ENGINE DIVERGENCE D-009. Arrow-key wrapping in a native radio group is
+     * provided by the BROWSER, and the browsers disagree: Chromium and Firefox
+     * wrap, WebKit clamps at the ends. Verified against plain
+     * `<input type="radio">` markup with no AAL involved, so this is platform
+     * behaviour rather than a defect in the component.
+     *
+     * The assertion is therefore split rather than skipped. Both branches
+     * verify the same underlying requirement — arrow keys move focus AND
+     * selection together, which is what makes a radio group one control — and
+     * each states what its engine actually does at the boundary.
+     *
+     * This is the measurable cost of the decision recorded in D-006: delegating
+     * to the platform buys correct assistive-technology integration and gives
+     * up cross-engine consistency. Both halves of that trade are real, and the
+     * dissertation should report both.
+     */
     const all = radios(page);
     await all.nth(2).focus();
 
     await page.keyboard.press('ArrowDown');
+
+    if (browserName === 'webkit') {
+      // Clamping means the press moved nothing, so it also selected nothing —
+      // focus and selection stay coupled, which is the property under test.
+      await expect(all.nth(2), 'WebKit is expected to clamp, not wrap (D-009)').toBeFocused();
+      await expect(all.nth(2)).not.toBeChecked();
+      await expect(all.nth(0)).not.toBeChecked();
+      return;
+    }
 
     await expect(all.nth(0)).toBeFocused();
     await expect(all.nth(0)).toBeChecked();
@@ -89,13 +115,14 @@ test.describe('Up Arrow — moves focus to and selects the previous radio', () =
     await expect(all.nth(0)).toBeChecked();
   });
 
-  test('wraps from the first radio to the last', async ({ page }) => {
+  test('wraps from the first radio to the last — where the engine wraps', async ({ page, browserName }) => {
+    // ENGINE DIVERGENCE D-009, the backwards case. See the note above.
     const all = radios(page);
     await all.nth(0).focus();
 
     await page.keyboard.press('ArrowUp');
 
-    await expect(all.nth(2)).toBeFocused();
+    await expect(browserName === 'webkit' ? all.nth(0) : all.nth(2)).toBeFocused();
   });
 });
 

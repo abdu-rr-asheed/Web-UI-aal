@@ -22,7 +22,7 @@
   background: var(--aal-color-surface-overlay);
   color: var(--aal-color-text-default);
   font-size: var(--aal-font-size-sm);
-  line-height: var(--aal-font-lineheight-body);
+  line-height: var(--aal-font-line-height-body);
 }
 
 /* No transition. A tooltip that fades in delays the information for everyone
