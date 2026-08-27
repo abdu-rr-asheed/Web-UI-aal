@@ -121,18 +121,18 @@ gone. Verified at 320px in `e2e/a11y/reflow.spec.ts`.
 | Check | Where | Status |
 |---|---|---|
 | Every APG keyboard row | `libs/components/tabs/src/tabs.spec.ts` | PASS |
-| Single tab stop, in a real tab order | `e2e/keyboard/tabs.spec.ts` | PASS (Chromium) |
+| Single tab stop, in a real tab order | `e2e/keyboard/tabs.spec.ts` | PASS (Chromium, Firefox, WebKit) |
 | Manual activation renders no extra panel | unit + E2E | PASS |
 | Panel focusability, both cases | unit + E2E | PASS |
 | Selection re-resolves when a tab is disabled | unit + primitive | PASS |
 | Focus after closing a tab | `libs/primitives/tabs/src/tabs.spec.ts` | PASS |
-| Computed accessibility tree | `e2e/keyboard/tabs.spec.ts` | PASS (Chromium) |
+| Computed accessibility tree | `e2e/keyboard/tabs.spec.ts` | PASS (Chromium, Firefox, WebKit) |
 | axe: default, vertical, automatic, panel-with-control | unit | PASS |
-| Reflow at 320px, list wraps | `e2e/a11y/reflow.spec.ts` | PASS (Chromium) |
-| forced-colors: selected tab keeps a border | `e2e/forced-colors/navigation.spec.ts` | PASS (Chromium) |
+| Reflow at 320px, list wraps | `e2e/a11y/reflow.spec.ts` | PASS (Chromium — project is Chromium-only) |
+| forced-colors: selected tab keeps a border | `e2e/forced-colors/navigation.spec.ts` | PASS (Chromium — Playwright emulates forced colours nowhere else) |
 | Contrast, all themes | `tools/contrast-validator` | PASS |
 | RTL arrow inversion, in a browser | — | **NOT YET RUN** (covered at L2 in jsdom only) |
 | SSR render + hydration | — | **NOT YET RUN** |
 | Text-spacing override | — | **NOT YET RUN** |
-| NVDA + Firefox | — | **NOT YET RUN** — blocked by D-002 |
+| NVDA + Firefox | — | **NOT YET RUN** — no longer blocked (D-002 resolved 2026-08-25); awaiting a human pass |
 | VoiceOver + Safari | — | **NOT YET RUN** — no macOS device available |

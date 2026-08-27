@@ -100,7 +100,7 @@ Icon-only buttons with no accessible name. A screen-reader user hears "button" w
 
 | Screen reader | Browser | Date | Result |
 |---|---|---|---|
-| NVDA | Firefox | — | **NOT YET RUN** — blocked by D-002 (Firefox will not launch locally) |
+| NVDA | Firefox | — | **NOT YET RUN** — no longer blocked (D-002 resolved 2026-08-25); awaiting a human pass |
 | NVDA | Chrome | — | **NOT YET RUN** |
 | VoiceOver | Safari | — | **NOT YET RUN** |
 
@@ -116,7 +116,7 @@ Icon-only buttons with no accessible name. A screen-reader user hears "button" w
 
 ## Open items
 
-- [ ] Manual NVDA + Firefox pass (blocked by D-002)
+- [ ] Manual NVDA + Firefox pass — unblocked 2026-08-25, not yet performed
 - [ ] Manual VoiceOver + Safari pass
 - [ ] Playwright accessibility-tree snapshot once Button is used in the docs app
 - [ ] Bundle-size measurement against the ≤6 KB gz budget

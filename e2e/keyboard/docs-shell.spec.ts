@@ -78,12 +78,17 @@ test.describe('docs site — keyboard (AR-02, SC 2.4.1)', () => {
      * inferred from a Tab walk.
      *
      * The earlier Tab-walk version passed on Chromium and failed on
-     * keyboard-firefox with "focus stuck for 22 consecutive Tabs". That was an
-     * artifact of headless Firefox never seeding document focus, not a barrier
-     * a real user would hit — see D-005. Seeding focus explicitly removes the
-     * artifact while testing strictly more of the criterion, because it now
-     * checks every focusable element rather than wherever a Tab walk happened
-     * to land.
+     * keyboard-firefox with "focus stuck for 22 consecutive Tabs". That was
+     * attributed to headless Firefox never seeding document focus; the
+     * attribution was WRONG and is retracted in D-005 — Firefox was in a
+     * broken install at the time (D-002), and with it repaired the tab walk on
+     * this very page is byte-identical to Chromium.
+     *
+     * The rewrite is kept anyway, because it was never really a workaround: it
+     * asserts the criterion directly and tests strictly more of it, checking
+     * every focusable element in both directions rather than wherever a walk
+     * happened to land. What is engine-dependent is only the boundary case
+     * below.
      */
     /**
      * Two exclusions, both because the element is CORRECTLY not focusable, so
@@ -96,6 +101,11 @@ test.describe('docs site — keyboard (AR-02, SC 2.4.1)', () => {
      *     collapsed-viewport toggle is a `<button>` in the markup at every
      *     width and focusable at none above the breakpoint — which is the
      *     point of it, and this test found it the day it was added.
+     *
+     * WebKit skips links entirely (D-001, D-008), so the set of elements it
+     * walks differs from the other two engines. That needs no branching here:
+     * each element is focused programmatically, which works on every engine,
+     * and the assertion is about leaving it rather than arriving at it.
      *
      * SC 2.1.2 is about components that CAN receive focus, so narrowing the
      * sweep this way tests the criterion rather than something adjacent to it.

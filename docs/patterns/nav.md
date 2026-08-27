@@ -106,19 +106,19 @@ collapsed layout at a wider viewport — which is the behaviour they need.
 | Check | Where | Status |
 |---|---|---|
 | No `menu`/`menuitem` role in the DOM | `libs/components/nav/src/navigation.spec.ts` | PASS |
-| No `menu`/`menuitem` in the **computed accessibility tree** | `e2e/keyboard/nav.spec.ts` | PASS (Chromium) |
+| No `menu`/`menuitem` in the **computed accessibility tree** | `e2e/keyboard/nav.spec.ts` | PASS (Chromium, Firefox, WebKit) |
 | Escape closes and restores focus | unit + E2E | PASS |
 | Focus leaving closes the submenu | unit | PASS |
 | Submenu arrows | unit + E2E | PASS |
 | Arrows NOT bound at top level | unit + E2E | PASS |
-| Responsive collapse at 375px | `e2e/keyboard/nav.spec.ts` | PASS (Chromium) |
-| Reflow at 320px, no horizontal scroll | `e2e/a11y/reflow.spec.ts` | PASS (Chromium) |
-| forced-colors: current page keeps a border | `e2e/forced-colors/navigation.spec.ts` | PASS (Chromium) |
+| Responsive collapse at 375px | `e2e/keyboard/nav.spec.ts` | PASS (Chromium, Firefox, WebKit) |
+| Reflow at 320px, no horizontal scroll | `e2e/a11y/reflow.spec.ts` | PASS (Chromium — project is Chromium-only) |
+| forced-colors: current page keeps a border | `e2e/forced-colors/navigation.spec.ts` | PASS (Chromium — Playwright emulates forced colours nowhere else) |
 | axe, every documented state | `libs/components/nav/src/navigation.spec.ts` | PASS |
 | Contrast, all themes | `tools/contrast-validator` | PASS |
 | RTL | — | **NOT YET RUN** |
 | SSR render + hydration | — | **NOT YET RUN** |
-| NVDA + Firefox | — | **NOT YET RUN** — blocked by D-002 |
+| NVDA + Firefox | — | **NOT YET RUN** — no longer blocked (D-002 resolved 2026-08-25); awaiting a human pass |
 | VoiceOver + Safari | — | **NOT YET RUN** — no macOS device available |
 
 The last four rows are open. They are listed rather than omitted because PRD

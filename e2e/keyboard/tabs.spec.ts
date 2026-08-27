@@ -132,6 +132,15 @@ test.describe('Enter and Space — activate the focused tab', () => {
     // mouse. A panel that is neither a tab stop nor holds one is unreachable.
     await page.locator(tab('Menu button')).focus();
     await page.keyboard.press('Enter');
+
+    // Wait for the panel to have actually rendered before tabbing into it.
+    // Not a sleep and not a workaround: pressing the second key before the
+    // first key's render has landed tests the framework's scheduling rather
+    // than the component, and it failed roughly one run in twelve under load.
+    // The panel being present is a precondition of the assertion, so it is
+    // stated as one.
+    await expect(page.getByRole('button', { name: /Row actions/ })).toBeVisible();
+
     await page.keyboard.press('Tab');
 
     const insidePanel = await page.evaluate(

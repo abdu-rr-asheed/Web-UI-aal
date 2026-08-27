@@ -59,14 +59,14 @@ the literature quantifies.
 
 ---
 
-## D-002 — Firefox will not launch in this environment
+## D-002 — Firefox would not launch in this environment (RESOLVED)
 
 | Field | Value |
 |---|---|
 | **Discovered** | 2026-08-22, Phase 2 Session C |
 | **Engines** | Firefox |
-| **Severity** | **Blocks a project dependency, not a WCAG criterion** |
-| **Status** | OPEN — needs resolution before the evaluation phase |
+| **Severity** | **Blocked a project dependency, not a WCAG criterion** |
+| **Status** | **RESOLVED 2026-08-25** — `npx playwright install --force firefox` |
 
 **Observed.** `browserType.launch: spawn UNKNOWN` when Playwright starts the
 bundled Firefox on this Windows machine. Chromium and WebKit launch normally.
@@ -84,12 +84,25 @@ accessibility evidence.
    (`MSc SE`) — OneDrive placeholder files have caused `spawn UNKNOWN` before.
 3. Missing Visual C++ runtime dependency.
 
-**Next steps.** Try `npx playwright install --force firefox`; if that fails,
-launch the binary directly to surface the OS-level error; if it is OneDrive,
-move the working copy off the synced path. Until resolved, Firefox is excluded
-from the local E2E run and CI (Ubuntu) is the only place Firefox coverage
-happens — which is acceptable for automation but **not** acceptable for the
-manual NVDA passes required by TR-09.
+**Resolution — 2026-08-25.** `npx playwright install --force firefox`
+re-downloaded the browser and it now launches (Firefox 153.0). The first of the
+three hypotheses above was therefore wrong in an instructive way: nothing was
+blocking the binary, the download itself was **incomplete or corrupt**, and
+every symptom pointed at the environment rather than at the artifact. The
+OneDrive path — the hypothesis that felt most likely, because it is the unusual
+thing about this machine — was irrelevant.
+
+All 90 Firefox tests (`a11y-firefox` + `keyboard-firefox`) pass on the first
+run, and the full eight-project matrix is green at **286/286**.
+
+**What this unblocks.** TR-09's manual **NVDA + Firefox** pass, which had
+accumulated as a gating item across all eighteen components, and the §13.3
+participant study environment. Those are human tasks and remain outstanding —
+but they are now possible.
+
+**What it invalidates.** D-005 was recorded while Firefox was in this state.
+It has been re-verified and largely retracted; see the correction there. A
+divergence observed through a broken tool is a claim about the tool.
 
 ---
 
@@ -149,26 +162,57 @@ read the Lighthouse numbers from CI artefacts rather than from a local run.
 
 ---
 
-## D-005 — Headless Firefox does not seed document focus, breaking Tab-walk tests
+## D-005 — Headless Firefox and the document-boundary Tab case
 
 | Field | Value |
 |---|---|
 | **Discovered** | 2026-08-22, Phase 2 Session D, CI `keyboard-firefox` |
+| **Revised** | **2026-08-25 — the primary claim is RETRACTED** |
 | **Engines** | Firefox (headless, Playwright) |
 | **Severity** | **Test-environment artifact — NOT a user-facing barrier** |
-| **Status** | RESOLVED by testing the criterion directly |
+| **Status** | RESOLVED by testing the criterion directly; entry corrected below |
 
-**Observed.** The keyboard-trap test pressed `Tab` 25 times and asserted focus
-never stayed on one element for 3 consecutive presses. Chromium passed; Firefox
-reported a run of **22** — focus never moved off `body`.
+> ### Correction — 2026-08-25
+>
+> **The headline claim of this entry was wrong, and it is retracted.**
+>
+> This was recorded while Firefox was unlaunchable locally (D-002), so it could
+> only ever be observed through CI, and never re-checked directly. With Firefox
+> reinstalled and working (153.0), the behaviour was measured against the real
+> docs site on all three engines:
+>
+> | Engine | First five `Tab` presses from page load |
+> |---|---|
+> | Chromium | skip link → Home → Components → Audit reports → Save changes |
+> | **Firefox** | **identical to Chromium** |
+> | WebKit | Components → Save changes → Cancel → Delete → Saving (every link skipped) |
+>
+> Firefox seeds document focus correctly and walks the tab order exactly like
+> Chromium. "Focus never moved off `body`" **does not reproduce**.
+>
+> **What does survive** is the narrower second observation, re-verified: at the
+> *document boundary*, `Tab` from the last focusable element leaves
+> `activeElement` unchanged in Firefox where Chromium reports `body`. That is
+> genuinely unobservable from inside the page, and it still justifies the
+> boundary exclusions in the current test.
+>
+> **Why this matters more than the correction itself.** The original entry
+> attributed a broken tool's behaviour to an engine, and it read as a confident
+> finding for three days. A cross-engine register is only as good as the
+> environment it was gathered in — and a divergence observed through a
+> malfunctioning browser is a claim about the browser installation, not about
+> the browser. Anything recorded against Firefox before 2026-08-25 deserves the
+> same scrutiny; D-005 was the only such entry.
 
-**Assessment — and why this one is NOT a finding.** Unlike D-001, this does not
-reflect anything a real user would experience. Firefox is the primary NVDA
-browser and Tab moves through links there normally; the cause is that headless
-Firefox under Playwright starts with focus outside the document, so the first
-`Tab` has nowhere to go from. Reporting it as an accessibility barrier would be
-a false positive, and a barrier register padded with false positives is worth
-less than one that is short and true.
+**Originally observed.** The keyboard-trap test pressed `Tab` 25 times and
+asserted focus never stayed on one element for 3 consecutive presses. Chromium
+passed; Firefox reported a run of **22**.
+
+**Assessment — and why this one is NOT a finding.** Unlike D-001, it reflects
+nothing a real user would experience. Reporting it as an accessibility barrier
+would have been a false positive, and a barrier register padded with false
+positives is worth less than one that is short and true. That reasoning was
+right; the diagnosis attached to it was not.
 
 **The distinction matters methodologically.** D-001 is a genuine platform
 behaviour affecting real Safari users and is reported as such. D-005 is an
@@ -325,7 +369,7 @@ it. Two such guards exist now; more are needed as the emulated suites grow.
 
 ---
 
-## D-008 — WebKit does not focus a button on click, and excludes buttons and links from the tab sequence
+## D-008 — WebKit does not focus a button or a link on click
 
 | Field | Value |
 |---|---|
@@ -342,16 +386,33 @@ it. Two such guards exist now; more are needed as the emulated suites grow.
 
 | Action | `document.activeElement` |
 |---|---|
-| `click('#a')` | **`<body>`** — the button is not focused |
+| `click('#a')` (button) | **`<body>`** — not focused |
+| `click('#l')` (link) | **`<body>`** — not focused |
 | `document.getElementById('a').focus()` | the button — programmatic focus works |
-| `Tab` from the focused `<input>` | **`<body>`** — skips both the button and the link |
 
-**Cause.** WebKit's default keyboard-navigation model includes form fields only.
-Buttons and links are reachable by `Tab` on macOS only when "Press Tab to
-highlight each item" is enabled, and clicking a button does not focus it — this
-is long-standing Safari behaviour that Playwright's WebKit inherits on every
-platform. D-001 recorded the link half of this; the click half is new, and more
-consequential.
+**Tab order, measured against the live docs site** (`link, button, input, link, button`):
+
+| Engine | Sequence |
+|---|---|
+| Chromium | link → button → input → link → button |
+| Firefox | link → button → input → link → button |
+| **WebKit** | **button → input → button** — every link skipped |
+
+> **Correction, 2026-08-25.** This entry originally said WebKit excludes
+> *buttons and links* from the tab sequence. That is wrong about buttons, and
+> the error came from misreading an earlier probe: `Tab` from the last
+> focusable element reached `<body>` simply because it was the end of the
+> document, and I read it as the button being skipped. Re-measured with the
+> elements ordered so the two cases are distinguishable, **buttons are in
+> WebKit's tab sequence and links are not.** The click behaviour below was
+> directly observed and stands — and applies to links as well as buttons.
+
+**Cause.** WebKit's default keyboard-navigation model omits links, reachable on
+macOS only when "Press Tab to highlight each item" is enabled, and clicking
+neither a button nor a link focuses it. Long-standing Safari behaviour that
+Playwright's WebKit inherits on every platform. D-001 recorded the link half of
+the tab-order story; the **click** half is the new and more consequential
+finding.
 
 **Why the click half matters more.** A test that clicks a trigger and then
 asserts something about focus is, on WebKit, asserting the engine's pointer
@@ -377,6 +438,12 @@ gets the correct behaviour, because they arrived by keyboard. The register
 records this as an *artifact of how the test drove the browser*, distinct from
 D-009 below, which is a real behavioural difference users experience. Pooling
 the two would make "our CI found N cross-engine failures" meaningless.
+
+**Cross-checked against Firefox, 2026-08-25.** With Firefox working (D-002
+resolved), all 90 Firefox tests pass unmodified — no engine-aware branching
+needed anywhere. WebKit is the only engine requiring it, which is worth stating
+plainly: the cross-engine cost of this project is concentrated in one engine
+rather than spread across three.
 
 **Unrelated finding in the same run.** The docs-shell keyboard-trap sweep is
 O(focusables on the page) with four browser round trips each, and Sprint 4

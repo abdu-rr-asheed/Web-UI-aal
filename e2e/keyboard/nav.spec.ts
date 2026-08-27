@@ -82,6 +82,9 @@ test.describe('Down and Up Arrow — move within an open submenu', () => {
   test('Down from the trigger enters the submenu', async ({ page }) => {
     const trigger = page.getByRole('button', { name: /Components/ });
     await trigger.click();
+    // The submenu must exist before ArrowDown can move into it; asserting that
+    // makes the precondition explicit instead of relying on render timing.
+    await expect(page.getByRole('link', { name: 'Buttons and links' })).toBeVisible();
     await trigger.focus();
 
     await page.keyboard.press('ArrowDown');
@@ -240,6 +243,9 @@ test.describe('ADR-0005 — a menu of ACTIONS is where role="menu" belongs', () 
     const trigger = page.getByRole('button', { name: /Row actions/ });
     await trigger.focus();
     await page.keyboard.press('ArrowDown');
+    // Escape pressed before the menu has rendered would reach the trigger's
+    // handler, where it means nothing, and leave the menu open.
+    await expect(page.getByRole('menuitem', { name: 'Rename' })).toBeFocused();
 
     await page.keyboard.press('Escape');
 
@@ -254,6 +260,7 @@ test.describe('ADR-0005 — a menu of ACTIONS is where role="menu" belongs', () 
     const trigger = page.getByRole('button', { name: /Row actions/ });
     await trigger.focus();
     await page.keyboard.press('ArrowDown');
+    await expect(page.getByRole('menuitem', { name: 'Rename' })).toBeFocused();
 
     await page.keyboard.press('Enter');
 
@@ -269,6 +276,7 @@ test.describe('ADR-0005 — a menu of ACTIONS is where role="menu" belongs', () 
     const trigger = page.getByRole('button', { name: /Row actions/ });
     await trigger.focus();
     await page.keyboard.press('ArrowDown');
+    await expect(page.getByRole('menuitem', { name: 'Rename' })).toBeFocused();
 
     await page.keyboard.press('Tab');
 
