@@ -82,6 +82,26 @@ export type AalAutocomplete =
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './text-field.css',
+  /**
+   * Strip `autocomplete` from the HOST element.
+   *
+   * `autocomplete` is an Angular input here, and a consumer writing
+   * `<aal-text-field autocomplete="name">` leaves that as a real attribute on
+   * the custom element as well as passing it to the inner `<input>`. On the
+   * host it is invalid HTML — `autocomplete` belongs to form controls, and
+   * `<aal-text-field>` is not one — so the page carries an attribute that
+   * means nothing and that a conformance checker is right to reject.
+   *
+   * Found by **Pa11y**, not by axe: axe does not implement this check at all.
+   * That disagreement is the reason ADR-0009 runs two engines, and it is the
+   * first defect the second engine has caught that the first missed.
+   *
+   * Same class of bug as the Sprint 3 dialog, where an input named `role`
+   * shadowed the global attribute and put two alertdialogs in the tree. An
+   * input named after a real HTML attribute always leaks onto the host; the
+   * fix is to remove it there deliberately.
+   */
+  host: { '[attr.autocomplete]': 'null' },
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

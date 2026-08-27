@@ -55,6 +55,25 @@ describe('AalSkipLink', () => {
     it('is reachable on the very first Tab', async () => {
       const user = userEvent.setup();
       await setup();
+
+      /**
+       * The precondition, asserted rather than assumed: "the FIRST Tab" only
+       * means anything if focus starts at the document body.
+       *
+       * This test failed on CI (Ubuntu) on three pushes between 22 and 27
+       * August with `activeElement` reported as `<body>` AFTER the Tab — i.e.
+       * focus never moved — while passing on Windows every time. It passes on
+       * CI again now, and the cause was never established; the likely
+       * candidates are focus leaking from an earlier test in the same worker,
+       * or a different file distribution across CI's smaller worker pool.
+       *
+       * Rather than guess at a fix for something that currently passes, the
+       * two possibilities are separated: if this first assertion fails, focus
+       * leaked in from elsewhere; if it passes and the next one fails, the
+       * link genuinely was not tabbable. The next CI failure will say which.
+       */
+      expect(document.activeElement, 'focus did not start at the document body').toBe(document.body);
+
       await user.tab();
       expect(document.activeElement).toBe(screen.getByRole('link', { name: 'Skip to main content' }));
     });

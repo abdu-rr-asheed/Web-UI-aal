@@ -43,9 +43,14 @@ jobs:
       - name: ESLint + Stylelint
         run: npm run lint
 
-      - name: TypeScript
-        run: npm run typecheck
-
+      # NOTE: `npm run typecheck` is NOT here. The library tsconfigs resolve
+      # sibling @aal/* packages to dist/ rather than to source, deliberately —
+      # a library build must not pull a sibling's sources across its rootDir
+      # (see the comment in libs/components/tsconfig.lib.json). That makes a
+      # built dist/ a hard precondition, so type checking runs in the build
+      # job, after the build. It sat here failing every run on main from
+      # 22 August to 27 August.
+      #
       # TR-07. Rebuilds tokens from source and re-derives every contrast pair,
       # so a hand-edited generated stylesheet cannot smuggle a failing colour in.
       - name: Design tokens + contrast gate
@@ -111,6 +116,13 @@ jobs:
       # artefact shape is actually checked.
       - name: Build @aal/* libraries
         run: npm run build
+
+      # Runs HERE, not in the static job: the library tsconfigs resolve sibling
+      # @aal/* packages to dist/, so a built tree is a precondition. This job
+      # has no `needs`, so it starts in parallel with static and the feedback
+      # is no slower than it was.
+      - name: TypeScript
+        run: npm run typecheck
 
       - name: Build docs app (audit target)
         run: npx ng build docs

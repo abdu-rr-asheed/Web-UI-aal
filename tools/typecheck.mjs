@@ -21,6 +21,32 @@ import { join } from 'node:path';
 // execFile cannot run a .cmd shim at all. This path works on both platforms.
 const TSC = join('node_modules', 'typescript', 'bin', 'tsc');
 
+/**
+ * The library tsconfigs resolve sibling @aal/* packages to dist/, not to
+ * source — deliberately, so a library build never pulls a sibling's sources
+ * across its rootDir (see libs/components/tsconfig.lib.json). A built tree is
+ * therefore a PRECONDITION of type checking, not an optional convenience.
+ *
+ * Without this guard the failure mode is ~200 "Cannot find module '@aal/...'"
+ * errors followed by a cascade of "Object is of type 'unknown'", which reads
+ * like the code is broken rather than like a step was skipped. That is exactly
+ * how it was misread in CI: the static job ran typecheck before any build and
+ * failed on every push to main from 22 to 27 August 2026.
+ */
+const REQUIRED_DIST = ['tokens', 'a11y-core', 'primitives', 'components'];
+const missing = REQUIRED_DIST.filter((p) => !existsSync(join('dist', p)));
+
+if (missing.length) {
+  console.error(
+    [
+      `typecheck: dist/${missing.join(', dist/')} not built.`,
+      'The @aal/* libraries type-check against their BUILT output, not their sources.',
+      'Run `npm run build` first.',
+    ].join('\n'),
+  );
+  process.exit(1);
+}
+
 const roots = ['libs', 'apps'];
 const configs = [];
 
