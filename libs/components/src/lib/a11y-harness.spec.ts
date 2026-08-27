@@ -111,9 +111,36 @@ describe('a11y harness', () => {
       const user = userEvent.setup();
       const { fixture } = await render(AccessibleFixture);
 
-      await user.tab();
+      /**
+       * Precondition, asserted rather than assumed: `tab()` walks from wherever
+       * focus currently is, so "the first Tab" is only meaningful from body.
+       *
+       * This test and the skip-link equivalent both failed on CI (Ubuntu) with
+       * focus reported on `<body>` AFTER the Tab — never on Windows. The two
+       * failures share a shape, so the state is captured here to tell the
+       * candidates apart on the next run rather than guess a third time.
+       */
+      expect(document.activeElement, 'focus did not start at the document body').toBe(document.body);
+
       const button = screen.getByRole('button', { name: 'Save changes' });
-      expect(document.activeElement).toBe(button);
+
+      // If tab() finds nothing to move to, the reason is almost always that the
+      // element is not where user-event looks, or not considered visible.
+      const diagnostic = () => {
+        const style = getComputedStyle(button);
+        return JSON.stringify({
+          buttonInBody: document.body.contains(button),
+          display: style.display,
+          visibility: style.visibility,
+          tabbableCount: document.querySelectorAll(
+            'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          ).length,
+          activeAfterTab: document.activeElement?.tagName,
+        });
+      };
+
+      await user.tab();
+      expect(document.activeElement, `Tab reached nothing. State: ${diagnostic()}`).toBe(button);
 
       // Enter and Space must both activate a native button.
       await user.keyboard('{Enter}');

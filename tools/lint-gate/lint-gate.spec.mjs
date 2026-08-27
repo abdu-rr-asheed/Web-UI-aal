@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll } from 'vitest';
 import { ESLint } from 'eslint';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve, join } from 'node:path';
-import { writeFileSync, rmSync } from 'node:fs';
+import { writeFileSync, rmSync, mkdirSync, existsSync } from 'node:fs';
 
 /**
  * Tests the LINT GATE ITSELF, not the code it lints.
@@ -67,7 +67,24 @@ describe('lint gate — layer boundaries are enforced (PRD §7.6, ADR-0011)', ()
    * — which is the only way to prove the rule applies where it has to.
    */
   async function probe(layerDir, source) {
-    const file = join(ROOT, layerDir, '__gate-probe.ts');
+    const dir = join(ROOT, layerDir);
+    const file = join(dir, '__gate-probe.ts');
+
+    /**
+     * Create the directory if it is not there.
+     *
+     * `libs/primitives/src/lib/` exists in a working tree but is EMPTY, and
+     * git does not store empty directories — so it is simply absent from a
+     * clean checkout. This test therefore passed on every developer machine
+     * and threw ENOENT on CI, which is the worst possible split because the
+     * gate's own self-test is the thing that is supposed to be trustworthy.
+     *
+     * It went unnoticed because the `static` job failed earlier, at the
+     * TypeScript step, so `test:tools` never ran in CI at all.
+     */
+    const created = !existsSync(dir);
+    if (created) mkdirSync(dir, { recursive: true });
+
     writeFileSync(file, source);
     try {
       const eslint = new ESLint({ cwd: ROOT, ignore: false });
@@ -75,6 +92,9 @@ describe('lint gate — layer boundaries are enforced (PRD §7.6, ADR-0011)', ()
       return result?.messages ?? [];
     } finally {
       rmSync(file, { force: true });
+      // Leave the tree exactly as found — a stray empty directory would make
+      // the next run pass for the wrong reason.
+      if (created) rmSync(dir, { force: true, recursive: true });
     }
   }
 
